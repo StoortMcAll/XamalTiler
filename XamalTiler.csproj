@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activity1.cs" />
+    <Compile Include="ColourSpread_Compression.cs" />
     <Compile Include="Colour_Class.cs" />
     <Compile Include="Create_Image.cs" />
     <Compile Include="DistributionClass.cs" />

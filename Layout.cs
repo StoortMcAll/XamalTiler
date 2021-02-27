@@ -80,13 +80,13 @@ namespace XamalTiler
 			start.X = 1; start.Width = 2;
 			Add_Button(8, start, ">", MyButtonState.Hidden);
 
-			start.Y = 7; start.Height = 8;
+			start.Y = 3; start.Height = 4;
 			start.X = 0; start.Width = grid.Width;
 			Add_Button(3, start, "Edit Image>", MyButtonState.Hidden);
 
-			start.Y = 3; start.Height = 7;
-			start.X = 2; start.Width = grid.Width;
-			Add_Button(9,0, start, _spreadRenderTarget, MyButtonState.Hidden, UserInputType.None);
+			start.Y = 4; start.Height = 8;
+			start.X = 0; start.Width = grid.Width;
+			Add_Button(9,0, start, _spreadRenderTarget, MyButtonState.Hidden, UserInputType.Drag);
 
 			start.X = 0; start.Width = 1;
 			Add_Button(10, start, "<", MyButtonState.Hidden, UserInputType.Press);
@@ -102,17 +102,15 @@ namespace XamalTiler
 			start = new Rectangle(0, 0, 1, 1);
 			Add_Button(4, 1, start, _imageRenderTarget,  MyButtonState.Visible, UserInputType.PinchDrag);
 
-
-
-
-
-
 			#endregion
 
 
 			#region Layout 1 - Edit Image  
 
+			dividers[1] = new Divider(1, area2, new Point(1, 6));
+
 			Add_Layout(1, dividers);
+			Divider divider = _currentLayout._dividers[1];
 
 			start = new Rectangle(0, 0, grid.Width, 1);
 
@@ -157,9 +155,6 @@ namespace XamalTiler
 			start.Y++; start.Height++;
 			Add_Button(5, start, "Full Screen");
 
-			start = new Rectangle(0, 0, 1, 1);
-			Add_Button(6,1, start, _imageRenderTarget, MyButtonState.Visible, UserInputType.PinchDrag);
-
 			start.Y = 1; start.Height = 2;
 			start.X = 0; start.Width = 1;
 			Add_Button(7, start, "<");
@@ -179,10 +174,20 @@ namespace XamalTiler
 			start.X = 1; start.Width = 2;
 			Add_Button(14, start, ">");
 
+			
+
+			start = new Rectangle(0, 0, 1, 6);
+			Add_Button(6, 1, start, _imageRenderTarget, MyButtonState.Visible, UserInputType.PinchDrag);
+
+			//start.Y = 5;
+			//Add_Button(15, 1, start, _imageRenderTarget, MyButtonState.Visible, UserInputType.Drag);
+
 			#endregion
 
 
 			#region Layout 2 Fullscreen Save Image
+
+			dividers[1] = new Divider(1, area2, new Point(1, 1));
 
 			grid = Find_Grid_For_Resolution(screenSize);
 			

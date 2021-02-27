@@ -71,7 +71,9 @@ namespace XamalTiler
 				case 7:
 					if (--_colorSetID == -1) _colorSetID = _colorSets.Count - 1;
 
-					_currentColorSetID = _colorSetID;
+					Set_CurrentColourSet(_colorSetID);
+
+					Draw_SpreadRenderTarget();
 
 					Create_Image.Update_Image_Full();
 
@@ -82,12 +84,17 @@ namespace XamalTiler
 				case 8:
 					if (++_colorSetID == _colorSets.Count) _colorSetID = 0;
 
-					_currentColorSetID = _colorSetID;
+					Set_CurrentColourSet(_colorSetID);
+
+					Draw_SpreadRenderTarget();
 
 					Create_Image.Update_Image_Full();
 
 					_usingRandomSpread = false;
 					_drawImageTarget = true;
+
+					break;
+				case 9:
 
 					break;
 				case 10:
@@ -145,7 +152,7 @@ namespace XamalTiler
 						Show_Button(3);
 						Show_Button(7);
 						Show_Button(8);
-						//Show_Button(9);
+						Show_Button(9);
 						//Show_Button(10);
 						//Show_Button(11);
 						//Show_Button(12);

@@ -20,13 +20,13 @@ namespace XamalTiler
 		internal enum ButtonTypes { TextButton, ImageButton, TextBox }
 		internal enum MyButtonState { Visible, Greyed, Hidden, FullScreen }
 
-		internal enum UserInputType { Press, Release, Pinch, Drag, PinchDrag, None }
-		internal enum UserInputEvent { None, Pressed, Released, Pinched, Dragged }
+		public enum UserInputType { Press, Release, Pinch, Drag, PinchDrag, None }
+		public enum UserInputEvent { None, Pressed, Released, Pinched, Dragged }
 
 		internal static Color DrawColor = White;
 
 		internal static GraphicsDevice _graphicsDevice;
-		static SpriteBatch _spriteBatch;
+		internal static SpriteBatch _spriteBatch;
 
 		static Point _screenSize;
 
@@ -37,7 +37,7 @@ namespace XamalTiler
 
 		public static MyButton _currentButton;
 
-		internal class Divider
+		internal struct Divider
 		{
 			internal int _ID;
 			internal Rectangle _area;

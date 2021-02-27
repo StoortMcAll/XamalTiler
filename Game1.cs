@@ -111,7 +111,7 @@ namespace XamalTiler
 
 			TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete |
 					GestureType.FreeDrag | GestureType.DragComplete | GestureType.Tap |
-					GestureType.None;
+					GestureType.None | GestureType.HorizontalDrag;
 
 			if (fwidth > fheight)
 				_displaySize = new Point(fheight, fwidth);
@@ -185,9 +185,7 @@ namespace XamalTiler
 			GraphicsDevice.Clear(Color.TransparentBlack);
 			GraphicsDevice.SetRenderTarget(null);
 
-			GraphicsDevice.SetRenderTarget(_spreadRenderTarget);
-			GraphicsDevice.Clear(Color.Red);
-			GraphicsDevice.SetRenderTarget(null);
+			Colour_Class.Draw_SpreadRenderTarget();
 
 			//DistributionClass.Initialise();
 

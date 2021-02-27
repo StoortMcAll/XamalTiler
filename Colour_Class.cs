@@ -13,10 +13,11 @@ using Android.Widget;
 using Microsoft.Xna.Framework;
 
 using static XamalTiler.Game1;
+using static XamalTiler.My_Layouts;
 
 namespace XamalTiler
 {
-    internal static class Colour_Class
+    internal static partial class Colour_Class
     {
         #region Variable Declaration
 
@@ -537,6 +538,17 @@ namespace XamalTiler
                     break;
 
             }
+        }
+   
+        internal static void Set_CurrentColourSet(int ID)
+		{
+            _currentColorSetID = ID;
+
+            _currentColorSet = _colorSets[_currentColorSetID];
+
+            _colorSpread = _currentColorSet._colorSpread;
+
+            _currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
         }
     }
 }

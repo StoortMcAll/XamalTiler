@@ -42,6 +42,7 @@ namespace XamalTiler
 
 					if (_isBbuttonActive)
 					{
+						UserInputType userInputType = _userInputType;
 
 						switch (_userInputType)
 						{
@@ -101,7 +102,7 @@ namespace XamalTiler
 											_buttonID = -1;
 										}
 										break;
-
+									
 									default:
 										_buttonID = -1;
 										_isBbuttonActive = false;
@@ -109,6 +110,28 @@ namespace XamalTiler
 								}
 								break;
 							case UserInputType.Drag:
+								if (_activeGestureType == GestureType.HorizontalDrag)
+								{
+									_startVectors[0] = _gestureSample.Position;
+
+									_dif = _startVectors[0].X / (float)_spreadRenderTarget.Width;
+
+									//_canvasLocal = WindowPoint_To_Canvas(_startVectors[0]);
+
+									//_dif /= (float)_spreadRenderTarget.Width;
+
+									if(Colour_Class.Adjust_Spread(_dif))
+									{
+										Colour_Class.Draw_SpreadRenderTarget();
+									}
+
+									Set_ImageOffset();
+								}
+								else
+								{
+									_isBbuttonActive = false;
+									_buttonID = -1;
+								}
 								break;
 							default:
 								break;
@@ -194,6 +217,20 @@ namespace XamalTiler
 									{
 										_buttonID = -1;
 										_isBbuttonActive = false;
+									}
+									break;
+								case GestureType.HorizontalDrag:
+									if (_userInputType == UserInputType.Drag)
+									{
+										_isBbuttonActive = true;
+
+										_activeGestureType = GestureType.HorizontalDrag;
+
+										Find_Point_Location(_startVectors[0]);
+
+										User_Input.Update_Input();
+
+										return _buttonID;
 									}
 									break;
 								default:

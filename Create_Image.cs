@@ -63,9 +63,11 @@ namespace XamalTiler
                 {
                     tempID = _currentColorSetID;
 
-                    _currentColorSet = _colorSets[_currentColorSetID];
+                    Set_CurrentColourSet(_currentColorSetID);
 
-                    _colorSpread = _currentColorSet._colorSpread;
+                    //_currentColorSet = _colorSets[_currentColorSetID];
+
+                    //_colorSpread = _currentColorSet._colorSpread;
                 }
                 _tileTexture.SetData(_pixelData);
 
@@ -146,11 +148,13 @@ namespace XamalTiler
 
         internal static void Update_Image_Full()
 		{
-            _currentColorSet = _colorSets[_currentColorSetID];
+            Set_CurrentColourSet(_currentColorSetID);
 
-            _colorSpread = _currentColorSet._colorSpread;
+            //_currentColorSet = _colorSets[_currentColorSetID];
 
-            _currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
+            //_colorSpread = _currentColorSet._colorSpread;
+
+            //_currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -196,11 +200,13 @@ namespace XamalTiler
         {
             int index = 0;
 
-            _currentColorSet = _colorSets[_currentColorSetID];
+            Set_CurrentColourSet(_currentColorSetID);
 
-            _colorSpread = _currentColorSet._colorSpread;
+            //_currentColorSet = _colorSets[_currentColorSetID];
 
-            _currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
+            //_colorSpread = _currentColorSet._colorSpread;
+
+            //_currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -268,11 +274,13 @@ namespace XamalTiler
         {
             int index = 0;
 
-            _currentColorSet = _colorSets[_currentColorSetID];
+            Set_CurrentColourSet(_currentColorSetID);
 
-            _colorSpread = _currentColorSet._colorSpread;
+            //_currentColorSet = _colorSets[_currentColorSetID];
 
-            _currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
+            //_colorSpread = _currentColorSet._colorSpread;
+
+            //_currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -347,11 +355,13 @@ namespace XamalTiler
 
             Color color;
 
-            _currentColorSet = _colorSets[_currentColorSetID];
+            Set_CurrentColourSet(_currentColorSetID);
 
-            _colorSpread = _currentColorSet._colorSpread;
+            //_currentColorSet = _colorSets[_currentColorSetID];
 
-            _currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
+            //_colorSpread = _currentColorSet._colorSpread;
+
+            //_currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
