@@ -1,6 +1,7 @@
 ﻿//using Android.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
+using zzz;
 using static XamalTiler.Game1;
 using static XamalTiler.My_Layouts;
 
@@ -31,7 +32,6 @@ namespace XamalTiler
 			{
 				if (_userInputType == UserInputType.Release)
 				{
-					
 					_isBbuttonActive = false;
 					_buttonID = -1;
 				}
@@ -42,8 +42,6 @@ namespace XamalTiler
 
 					if (_isBbuttonActive)
 					{
-						UserInputType userInputType = _userInputType;
-
 						switch (_userInputType)
 						{
 							case UserInputType.Press:
@@ -110,22 +108,18 @@ namespace XamalTiler
 								}
 								break;
 							case UserInputType.Drag:
-								if (_activeGestureType == GestureType.HorizontalDrag)
+								if (_gestureSample.GestureType == GestureType.FreeDrag)
 								{
 									_startVectors[0] = _gestureSample.Position;
 
-									_dif = _startVectors[0].X / (float)_spreadRenderTarget.Width;
+									_dif = (_startVectors[0].X  - _pointLocal.X) / (float)_spreadRenderTarget.Width;
 
-									//_canvasLocal = WindowPoint_To_Canvas(_startVectors[0]);
-
-									//_dif /= (float)_spreadRenderTarget.Width;
-
-									if(Colour_Class.Adjust_Spread(_dif))
+									if (Colour_Class.Adjust_Spread(_dif))
 									{
+										_pointLocal = _startVectors[0];
+
 										Colour_Class.Draw_SpreadRenderTarget();
 									}
-
-									Set_ImageOffset();
 								}
 								else
 								{
@@ -143,7 +137,7 @@ namespace XamalTiler
 			else
 			{
 				if (!TouchPanel.IsGestureAvailable) _activeGestureType = GestureType.None;
-				
+
 				while (TouchPanel.IsGestureAvailable)
 				{
 					_gestureSample = TouchPanel.ReadGesture();
@@ -160,7 +154,9 @@ namespace XamalTiler
 							Set_CurrentButton(_buttonID);
 
 							_userInputType = _currentButton._inputType;
-
+							UserInputType userInputType = _userInputType;
+							GestureType gestureType = _gestureSample.GestureType;
+							DebugWindow.Add("GestureType", gestureType.ToString());
 							switch (_gestureSample.GestureType)
 							{
 								case GestureType.Tap:
@@ -185,6 +181,18 @@ namespace XamalTiler
 										_activeGestureType = GestureType.FreeDrag;
 
 										Find_Point_Location(_startVectors[0]);
+
+										User_Input.Update_Input();
+
+										return _buttonID;
+									}
+									else if (_userInputType == UserInputType.Drag)
+									{
+										_isBbuttonActive = true;
+
+										_activeGestureType = GestureType.HorizontalDrag;
+
+										_pointLocal = WindowPoint_To_Canvas(_startVectors[0]);
 
 										User_Input.Update_Input();
 
@@ -219,7 +227,7 @@ namespace XamalTiler
 										_isBbuttonActive = false;
 									}
 									break;
-								case GestureType.HorizontalDrag:
+								case GestureType.DragComplete:
 									if (_userInputType == UserInputType.Drag)
 									{
 										_isBbuttonActive = true;
@@ -266,7 +274,6 @@ namespace XamalTiler
 		{
 			return locii[0] + (locii[1] - locii[0]) / 2.0f;
 		}
-
 
 
 		internal static void Find_Point_Location(Vector2 mouseLocal)

@@ -55,6 +55,9 @@
     <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DebugWin_V2.0">
+      <HintPath>D:\Documents\Visual Studio 2015\Projects\DebugWin_V2.0\DebugWin_V2.0\bin\Debug\DebugWin_V2.0.dll</HintPath>
+    </Reference>
     <Reference Include="Java.Interop" />
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />

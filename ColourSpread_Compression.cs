@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using zzz;
 using static XamalTiler.Game1;
 using static XamalTiler.My_Layouts;
 
@@ -19,11 +19,11 @@ namespace XamalTiler
 {
 	internal static partial class Colour_Class
 	{
-		const float RangeMin = 0.9f, RangeMax = 0.99f;
+		const float RangeMin = 0.9f, RangeMax = 0.99999f;
 
 		static int[] _vertices;
 
-		internal static float _sinOffset = 0.99f;
+		internal static float _sinOffset = 0.99f, _0to1 = 1.0f;
 
 		internal static void Draw_SpreadRenderTarget()
 		{
@@ -103,10 +103,13 @@ namespace XamalTiler
 		/// <param name="value">0 <= value <= 1.0</param>
 		internal static bool Adjust_Spread(float value)
 		{
-			if (value < 0) value = 0;
-			else if (value > 1.0f) value = 1.0f;
+			_0to1 += value;
 
-			float tempsin  = MathHelper.Lerp(RangeMin, RangeMax, value);
+			if (_0to1 < 0.0f) _0to1 = 0;
+			else if (_0to1 > 1.0f) _0to1 = 1.0f;
+
+			float tempsin  = MathHelper.Lerp(RangeMin, RangeMax, _0to1);
+
 			if (tempsin == _sinOffset) return false;
 
 			_sinOffset = tempsin;

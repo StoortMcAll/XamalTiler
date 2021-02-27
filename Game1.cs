@@ -12,6 +12,7 @@ using Android.Views;
 using Android.Util;
 using System.IO.IsolatedStorage;
 using Android.Content;
+using zzz;
 
 namespace XamalTiler
 {
@@ -111,7 +112,7 @@ namespace XamalTiler
 
 			TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete |
 					GestureType.FreeDrag | GestureType.DragComplete | GestureType.Tap |
-					GestureType.None | GestureType.HorizontalDrag;
+					GestureType.None;
 
 			if (fwidth > fheight)
 				_displaySize = new Point(fheight, fwidth);
@@ -187,6 +188,8 @@ namespace XamalTiler
 
 			Colour_Class.Draw_SpreadRenderTarget();
 
+			DebugWindow.Initialise(this, graphics, spriteBatch);
+
 			//DistributionClass.Initialise();
 
 		}
@@ -223,6 +226,9 @@ namespace XamalTiler
 				_buttonHit = 0;
 
 			Update_ASynch();
+
+
+			DebugWindow.Update(Point.Zero, false);
 
 			base.Update(gameTime);
 		}
@@ -331,6 +337,8 @@ namespace XamalTiler
 			spriteBatch.Begin();
 
 			My_Layouts.Draw();
+
+			DebugWindow.Draw();
 
 			spriteBatch.End();
 
