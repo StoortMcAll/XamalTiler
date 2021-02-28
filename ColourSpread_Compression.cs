@@ -23,7 +23,7 @@ namespace XamalTiler
 
 		static int[] _vertices;
 
-		internal static float _sinOffset = 0.99f, _0to1 = 1.0f;
+		internal static float _sinOffset = 0.99999f, _0to1 = 1.0f;
 
 		internal static void Draw_SpreadRenderTarget()
 		{

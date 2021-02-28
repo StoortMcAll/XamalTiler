@@ -152,7 +152,7 @@ namespace XamalTiler
 						Show_Button(3);
 						Show_Button(7);
 						Show_Button(8);
-						Show_Button(9);
+						Show_Button(15);
 						//Show_Button(10);
 						//Show_Button(11);
 						//Show_Button(12);

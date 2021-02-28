@@ -80,13 +80,13 @@ namespace XamalTiler
 			start.X = 1; start.Width = 2;
 			Add_Button(8, start, ">", MyButtonState.Hidden);
 
-			start.Y = 3; start.Height = 4;
+			start.Y = 4; start.Height = 5;
 			start.X = 0; start.Width = grid.Width;
 			Add_Button(3, start, "Edit Image>", MyButtonState.Hidden);
 
-			start.Y = 4; start.Height = 8;
+			start.Y = 3; start.Height = 4;
 			start.X = 0; start.Width = grid.Width;
-			Add_Button(9,0, start, _spreadRenderTarget, MyButtonState.Hidden, UserInputType.Drag);
+			Add_Button(15,0, start, _spreadRenderTarget, MyButtonState.Hidden, UserInputType.Drag);
 
 			start.X = 0; start.Width = 1;
 			Add_Button(10, start, "<", MyButtonState.Hidden, UserInputType.Press);
@@ -151,6 +151,8 @@ namespace XamalTiler
 			start.Y++; start.Height++;
 			Add_Button(4, start, "Start From 0");
 
+			start.Y++; start.Height++;
+			Add_Button(19, 0, start, _spreadRenderTarget, MyButtonState.Visible, UserInputType.Drag);
 
 			start.Y++; start.Height++;
 			Add_Button(5, start, "Full Screen");
@@ -179,8 +181,6 @@ namespace XamalTiler
 			start = new Rectangle(0, 0, 1, 6);
 			Add_Button(6, 1, start, _imageRenderTarget, MyButtonState.Visible, UserInputType.PinchDrag);
 
-			//start.Y = 5;
-			//Add_Button(15, 1, start, _imageRenderTarget, MyButtonState.Visible, UserInputType.Drag);
 
 			#endregion
 

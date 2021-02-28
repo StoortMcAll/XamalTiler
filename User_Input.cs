@@ -115,11 +115,9 @@ namespace XamalTiler
 									_dif = (_startVectors[0].X  - _pointLocal.X) / (float)_spreadRenderTarget.Width;
 
 									if (Colour_Class.Adjust_Spread(_dif))
-									{
-										_pointLocal = _startVectors[0];
-
 										Colour_Class.Draw_SpreadRenderTarget();
-									}
+									
+									_pointLocal = _startVectors[0];
 								}
 								else
 								{
@@ -154,9 +152,7 @@ namespace XamalTiler
 							Set_CurrentButton(_buttonID);
 
 							_userInputType = _currentButton._inputType;
-							UserInputType userInputType = _userInputType;
-							GestureType gestureType = _gestureSample.GestureType;
-							DebugWindow.Add("GestureType", gestureType.ToString());
+						
 							switch (_gestureSample.GestureType)
 							{
 								case GestureType.Tap:
