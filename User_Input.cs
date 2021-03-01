@@ -22,7 +22,6 @@ namespace XamalTiler
 		
 		static internal Vector2 _pointLocal = Vector2.Zero, _canvasLocal;
 
-
 		#endregion
 
 
@@ -54,13 +53,13 @@ namespace XamalTiler
 								_buttonID = -1;
 								break;
 							case UserInputType.PinchDrag:
+								_startVectors[0] = _gestureSample.Position;
+
 								switch (_gestureSample.GestureType)
 								{
 									case GestureType.FreeDrag:
 										if (_activeGestureType == GestureType.FreeDrag)
 										{
-											_startVectors[0] = _gestureSample.Position;
-
 											_canvasLocal = WindowPoint_To_Canvas(_startVectors[0]);
 
 											Set_ImageOffset();
@@ -77,7 +76,6 @@ namespace XamalTiler
 									case GestureType.Pinch:
 										if (_activeGestureType == GestureType.Pinch)
 										{
-											_startVectors[0] = _gestureSample.Position;
 											_startVectors[1] = _gestureSample.Position2;
 											_length2 = (_startVectors[0] - _startVectors[1]).Length();
 
@@ -110,17 +108,27 @@ namespace XamalTiler
 							case UserInputType.Drag:
 								if (_gestureSample.GestureType == GestureType.FreeDrag)
 								{
-									_startVectors[0] = _gestureSample.Position;
+									_canvasLocal = WindowPoint_To_Canvas(_gestureSample.Position);
 
-									_dif = (_startVectors[0].X  - _pointLocal.X) / (float)_spreadRenderTarget.Width;
+									_dif = (_canvasLocal.X  - _pointLocal.X) / (float)_spreadRenderTarget.Width;
 
 									if (Colour_Class.Adjust_Spread(_dif))
+									{
 										Colour_Class.Draw_SpreadRenderTarget();
-									
-									_pointLocal = _startVectors[0];
+
+										_pointLocal = _canvasLocal;
+									}
+
+									_drawImageTarget = true;
 								}
 								else
 								{
+									if (_buttonID == 20)
+									{
+										Create_Image.Update_Image_Full();
+										_drawImageTarget = true;
+									}
+
 									_isBbuttonActive = false;
 									_buttonID = -1;
 								}

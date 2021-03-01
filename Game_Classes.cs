@@ -45,6 +45,8 @@ namespace XamalTiler
                 int x, y, index, hit, cscount = _currentColorSet._colorSpreadCount - 1;
                 long hits;
 
+                Ensure_Spread_Compliance();
+
                 foreach (var local in _locations)
                 {
                     x = local._x;
@@ -55,13 +57,13 @@ namespace XamalTiler
                     if (hits > _maxHits) _maxHits = hits;
                     //if (_colourType == ColourType.SquareRoot) hits = (int)Math.Sqrt(hits);
 
-                    if (_maxHits > _iterCounter)
-					{
-                        hit = (int)hits;
-                    }
+     //               if (_maxHits > _iterCounter)
+					//{
+     //                   hit = (int)hits;
+     //               }
 
                     if (hits > cscount) hits = cscount;
-                    hit = (int)hits;
+                    hit = _adjustSpreadVertices[(int)hits];
 
                     index = y * _stride + x * 4;
 

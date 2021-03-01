@@ -40,125 +40,16 @@ namespace XamalTiler
         #endregion
 
 
-        internal static void Poll_FieldData()
-        {
-            Hits.Add_FieldData_To_PixelData();
-
-            Hits.ClearList();
-
-            _isDataPolled = true;
-        }
-
-        internal static void Set_Texture_PixelData()
-        {
-            if (_updateAll)
-            {
-                Update_Image_Full();
-
-                _updateAll = false;
-            }
-            else
-            {
-                if (tempID != _currentColorSetID)
-                {
-                    tempID = _currentColorSetID;
-
-                    Set_CurrentColourSet(_currentColorSetID);
-
-                    //_currentColorSet = _colorSets[_currentColorSetID];
-
-                    //_colorSpread = _currentColorSet._colorSpread;
-                }
-                _tileTexture.SetData(_pixelData);
-
-                _drawImageTarget = true;
-            }
-        }
-
-        internal static void Set_Min_Hits_to_Zero()
-		{
-            _minHits = 0;
-		}
-
-        internal static void Find_Min_Hits()
-		{
-            int hits;
-            _minHits = 9999;
-
-            for (int y = 0; y < _fieldHeight; y++)
-            {
-                for (int x = 0; x < _fieldWidth; x++)
-                {
-                    hits = _field[x, y];
-
-                    if (hits < _minHits) _minHits = hits;
-                }
-            }
-        }
-
-
-        internal static void Find_Max_Hits()
-        {
-            int hits;
-            _maxHits = 0;
-
-            for (int y = 0; y < _fieldHeight; y++)
-            {
-                for (int x = 0; x < _fieldWidth; x++)
-                {
-                    hits = _field[x, y];
-
-                    if (hits > _maxHits) _maxHits = hits;
-                }
-            }
-        }
-
-        internal static void Find_Total_Hits()
-        {
-            int hits = 0;
-            
-            for (int y = 0; y < _fieldHeight; y++)
-            {
-                for (int x = 0; x < _fieldWidth; x++)
-                {
-                    hits += _field[x, y];
-                }
-            }
-
-            //if (hits != _iterCounter)
-            //    hits -= _iterCounter;
-        }
-
-
-        internal static void Shift_Minimum_Hit_To_Zero()
-		{
-            for (int y = 0; y < _fieldHeight; y++)
-            {
-                for (int x = 0; x < _fieldWidth; x++)
-                {
-                    _field[x, y] -= (int)_minHits;
-                }
-            }
-
-            Set_Min_Hits_to_Zero();
-
-            Find_Max_Hits();
-        }
-
 
         internal static void Update_Image_Full()
 		{
+            int index = 0;
+
             Set_CurrentColourSet(_currentColorSetID);
 
-            //_currentColorSet = _colorSets[_currentColorSetID];
-
-            //_colorSpread = _currentColorSet._colorSpread;
-
-            //_currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
+            Colour_Class.Set_Vertices();
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
-
-            int index = 0;
 
             for (int y = 0; y < _fieldHeight; y++)
             {
@@ -183,7 +74,8 @@ namespace XamalTiler
                     if (hits > _currentSpreadCount)
                         hits = _currentSpreadCount;
 
-                    //var index = y * stride + x * 4;
+                    hits = _adjustSpreadVertices[hits];
+
 
                     _pixelData[index++] = _colorSpread[hits].R;
                     _pixelData[index++] = _colorSpread[hits].G;
@@ -201,12 +93,6 @@ namespace XamalTiler
             int index = 0;
 
             Set_CurrentColourSet(_currentColorSetID);
-
-            //_currentColorSet = _colorSets[_currentColorSetID];
-
-            //_colorSpread = _currentColorSet._colorSpread;
-
-            //_currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -268,19 +154,11 @@ namespace XamalTiler
             _tileTexture.SetData(_pixelData);
         }
 
-
-
         internal static void Update_Image_Full_Smooth2()
         {
             int index = 0;
 
             Set_CurrentColourSet(_currentColorSetID);
-
-            //_currentColorSet = _colorSets[_currentColorSetID];
-
-            //_colorSpread = _currentColorSet._colorSpread;
-
-            //_currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -299,23 +177,33 @@ namespace XamalTiler
             {
                 for (int x = 1; x < _fieldWidth + 1; x++)
                 {
-                    int hits = 0; 
+                    int hits = (int)
+                        (
+                            (
+                            _field[_fPosx[x - 1], _fPosx[y]] +
+                            _field[_fPosx[x + 1], _fPosx[y]] +
+                            _field[_fPosx[x], _fPosx[y - 1]] +
+                            _field[_fPosx[x], _fPosx[y + 1]]
+                            )
+                        / 4.0f
+                        ) * 2;
 
-                    hits += (int)(_field[_fPosx[x - 1], _fPosx[y]]); // / 2); // 50 %
-                    hits += (int)(_field[_fPosx[x + 1], _fPosx[y]]); // / 2); // 50 %
-                    hits += (int)(_field[_fPosx[x], _fPosx[y - 1]]); // / 2); // 50 %
-                    hits += (int)(_field[_fPosx[x], _fPosx[y + 1]]); // / 2); // 50 %
+                    hits += (int)
+                        (
+                            (
+                            _field[_fPosx[x - 1], _fPosx[y - 1]] +
+                            _field[_fPosx[x + 1], _fPosx[y - 1]] +
+                            _field[_fPosx[x - 1], _fPosx[y + 1]] +
+                            _field[_fPosx[x + 1], _fPosx[y + 1]]
+                            )
+                        / 4.0f
+                        );
 
-                    hits += (int)(_field[_fPosx[x - 1], _fPosx[y - 1]]); // / 4); // 25 %
-                    hits += (int)(_field[_fPosx[x + 1], _fPosx[y - 1]]); // / 4); // 25 %
-                    hits += (int)(_field[_fPosx[x - 1], _fPosx[y + 1]]); // / 4); // 25 %
-                    hits += (int)(_field[_fPosx[x + 1], _fPosx[y + 1]]); // / 4); // 25 %
+                   
 
-                    hits /= 8;
+                    hits += _field[_fPosx[x], _fPosx[y]] * 4;
 
-                    hits += _field[_fPosx[x], _fPosx[y]]; // 100 %
-
-                    hits /= 2;
+                    hits /= 7;
 
                     switch (_colourType)
                     {
@@ -334,8 +222,6 @@ namespace XamalTiler
                     if (hits > _currentSpreadCount)
                         hits = _currentSpreadCount;
 
-                    //var index = _fPosx[y] * stride + _fPosx[x] * 4;
-
                     _pixelData[index++] = _colorSpread[hits].R;
                     _pixelData[index++] = _colorSpread[hits].G;
                     _pixelData[index++] = _colorSpread[hits].B;
@@ -345,7 +231,6 @@ namespace XamalTiler
 
             _tileTexture.SetData(_pixelData);
         }
-
 
         internal static void Update_Image_Full_Average()
         {
@@ -357,11 +242,6 @@ namespace XamalTiler
 
             Set_CurrentColourSet(_currentColorSetID);
 
-            //_currentColorSet = _colorSets[_currentColorSetID];
-
-            //_colorSpread = _currentColorSet._colorSpread;
-
-            //_currentSpreadCount = _currentColorSet._colorSpreadCount - 1;
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -377,7 +257,7 @@ namespace XamalTiler
 
             int[] hitstore = new int[9];
 
-            int[] dxcol = new int[9] { 1, 2, 2, 2, 2, 4, 4, 4, 4 };
+            int[] dxcol = new int[9] { 1, 2, 2, 2, 2, 4, 4, 4, 4 };//25
 
             for (int y = 1; y < _fieldHeight + 1; y++) _fPosy[y] = y - 1;
 
@@ -422,10 +302,17 @@ namespace XamalTiler
                     g = _colorSpread[hitstore[0]].G;
                     b = _colorSpread[hitstore[0]].B;
 
+
+                    int tr, tg, tb;
+
                     for (int i = 1; i < 9; i++)
 					{
                         dxc = dxcol[i];
                         color = _colorSpread[hitstore[i]];
+                        tr = color.B / dxc;
+                        tg = color.G / dxc;
+                        tb = color.B / dxc;
+
                         r += color.R / dxc;
                         g += color.G / dxc;
                         b += color.B / dxc;
@@ -450,7 +337,6 @@ namespace XamalTiler
 
             _tileTexture.SetData(_pixelData);
         }
-
 
 
         internal static void Draw_Target()
@@ -488,7 +374,6 @@ namespace XamalTiler
 
             _drawImageTarget = false;
         }
-
 
         internal static void Draw_FullScreen()
         {
@@ -528,7 +413,6 @@ namespace XamalTiler
 
         }
 
-
         internal static void Draw_Screenshot()
         {
             _graphicsDevice.SetRenderTarget(_screenshotTarget);
@@ -558,5 +442,109 @@ namespace XamalTiler
 
             _graphicsDevice.SetRenderTarget(null);
         }
+
+
+        internal static void Poll_FieldData()
+        {
+            Hits.Add_FieldData_To_PixelData();
+
+            Hits.ClearList();
+
+            _isDataPolled = true;
+        }
+
+
+        internal static void Set_Texture_PixelData()
+        {
+            if (_updateAll)
+            {
+                Update_Image_Full();
+
+                _updateAll = false;
+            }
+            else
+            {
+                if (tempID != _currentColorSetID)
+                {
+                    tempID = _currentColorSetID;
+
+                    Set_CurrentColourSet(_currentColorSetID);
+                }
+                _tileTexture.SetData(_pixelData);
+
+                _drawImageTarget = true;
+            }
+        }
+
+
+        internal static void Find_Min_Hits()
+		{
+            int hits;
+            _minHits = 9999;
+
+            for (int y = 0; y < _fieldHeight; y++)
+            {
+                for (int x = 0; x < _fieldWidth; x++)
+                {
+                    hits = _field[x, y];
+
+                    if (hits < _minHits) _minHits = hits;
+                }
+            }
+        }
+
+        internal static void Find_Max_Hits()
+        {
+            int hits;
+            _maxHits = 0;
+
+            for (int y = 0; y < _fieldHeight; y++)
+            {
+                for (int x = 0; x < _fieldWidth; x++)
+                {
+                    hits = _field[x, y];
+
+                    if (hits > _maxHits) _maxHits = hits;
+                }
+            }
+        }
+
+        internal static void Find_Total_Hits()
+        {
+            int hits = 0;
+            
+            for (int y = 0; y < _fieldHeight; y++)
+            {
+                for (int x = 0; x < _fieldWidth; x++)
+                {
+                    hits += _field[x, y];
+                }
+            }
+
+            //if (hits != _iterCounter)
+            //    hits -= _iterCounter;
+        }
+
+        internal static void Shift_Minimum_Hit_To_Zero()
+		{
+            for (int y = 0; y < _fieldHeight; y++)
+            {
+                for (int x = 0; x < _fieldWidth; x++)
+                {
+                    _field[x, y] -= (int)_minHits;
+                }
+            }
+
+            Set_Min_Hits_to_Zero();
+
+            Find_Max_Hits();
+        }
+
+        internal static void Set_Min_Hits_to_Zero()
+		{
+            _minHits = 0;
+		}
+
+    
     }
 }

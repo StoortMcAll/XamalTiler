@@ -19,9 +19,15 @@ namespace XamalTiler
 {
 	internal static partial class Colour_Class
 	{
+		#region Variable Declaration
+
 		const float RangeMin = 0.9f, RangeMax = 0.99999f;
 
-		static int[] _vertices;
+		internal static bool _AdjustSpreadSet = false;
+
+		internal static int _adjustSpreadCount = 0;
+
+		internal static int[] _adjustSpreadVertices;
 
 		internal static float _sinOffset = 0.99999f, _0to1 = 1.0f;
 
@@ -42,19 +48,21 @@ namespace XamalTiler
 			{
 				rect.X = x;
 
-				_spriteBatch.Draw(_1by1, rect, _currentColorSet._colorSpread[_vertices[(int)(hitscale * x)]]);
+				_spriteBatch.Draw(_1by1, rect, _currentColorSet._colorSpread[
+					_adjustSpreadVertices[(int)(hitscale * x)]]);
 			}
 
 			_spriteBatch.End();
 		}
 
+		#endregion
 
-		private static void Set_Vertices()
+
+		internal static void Set_Vertices()
 		{
-
 			float[] scale = new float[_currentColorSet._colorSpreadCount];
 
-			_vertices = new int[_currentColorSet._colorSpreadCount];
+			_adjustSpreadVertices = new int[_currentColorSet._colorSpreadCount];
 
 			float val, xval = _sinOffset;
 
@@ -67,7 +75,11 @@ namespace XamalTiler
 				scale[i] = val;
 			}
 
-			_vertices = ResizeVerticesToWorldCoords(scale, _currentColorSet._colorSpreadCount);
+			_adjustSpreadVertices = ResizeVerticesToWorldCoords(scale, _currentColorSet._colorSpreadCount);
+
+			_adjustSpreadCount = _adjustSpreadVertices.Length;
+
+			_AdjustSpreadSet = true;
 		}
 
 		private static int[] ResizeVerticesToWorldCoords(float[] vectors, int range)
@@ -90,10 +102,10 @@ namespace XamalTiler
 
 				vectors[i] *= (range - 1) / length;
 
-				_vertices[i] = (int)vectors[i];
+				_adjustSpreadVertices[i] = (int)vectors[i];
 			}
 
-			return _vertices;
+			return _adjustSpreadVertices;
 		}
 
 
@@ -115,6 +127,17 @@ namespace XamalTiler
 			_sinOffset = tempsin;
 
 			return true;
+		}
+
+		/// <summary>
+		/// Test to ensure spread array is filled
+		/// If not then call Adjust_Spread method
+		/// </summary>
+		internal static void Ensure_Spread_Compliance()
+		{
+			if (_AdjustSpreadSet && _adjustSpreadCount == _currentColorSet._colorSpreadCount) return;
+
+			Set_Vertices();
 		}
 	}
 }

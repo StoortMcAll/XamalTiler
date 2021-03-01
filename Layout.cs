@@ -86,16 +86,16 @@ namespace XamalTiler
 
 			start.Y = 3; start.Height = 4;
 			start.X = 0; start.Width = grid.Width;
-			Add_Button(15,0, start, _spreadRenderTarget, MyButtonState.Hidden, UserInputType.Drag);
+			Add_Button(20,0, start, _spreadRenderTarget, MyButtonState.Hidden, UserInputType.Drag);
 
-			start.X = 0; start.Width = 1;
-			Add_Button(10, start, "<", MyButtonState.Hidden, UserInputType.Press);
-			start.X = 1; start.Width = 2;
-			Add_Button(11, start, ">", MyButtonState.Hidden, UserInputType.Press);
+			//start.X = 0; start.Width = 1;
+			//Add_Button(10, start, "<", MyButtonState.Hidden, UserInputType.Press);
+			//start.X = 1; start.Width = 2;
+			//Add_Button(11, start, ">", MyButtonState.Hidden, UserInputType.Press);
 
-			start.Y = 3; start.Height = 7;
-			start.X = 2; start.Width = grid.Width;
-			Add_Transparent_Button(12, start, "Colour Weighting", MyButtonState.Hidden, UserInputType.None);
+			//start.Y = 3; start.Height = 7;
+			//start.X = 2; start.Width = grid.Width;
+			//Add_Transparent_Button(12, start, "Colour Weighting", MyButtonState.Hidden, UserInputType.None);
 
 
 
@@ -110,7 +110,6 @@ namespace XamalTiler
 			dividers[1] = new Divider(1, area2, new Point(1, 6));
 
 			Add_Layout(1, dividers);
-			Divider divider = _currentLayout._dividers[1];
 
 			start = new Rectangle(0, 0, grid.Width, 1);
 
@@ -152,7 +151,7 @@ namespace XamalTiler
 			Add_Button(4, start, "Start From 0");
 
 			start.Y++; start.Height++;
-			Add_Button(19, 0, start, _spreadRenderTarget, MyButtonState.Visible, UserInputType.Drag);
+			Add_Button(20, 0, start, _spreadRenderTarget, MyButtonState.Visible, UserInputType.Drag);
 
 			start.Y++; start.Height++;
 			Add_Button(5, start, "Full Screen");

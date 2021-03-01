@@ -94,8 +94,8 @@ namespace XamalTiler
 					_drawImageTarget = true;
 
 					break;
-				case 9:
-
+				case 15:
+					_drawImageTarget = true;
 					break;
 				case 10:
 					DistributionClass._power -=1.0f;
@@ -152,7 +152,7 @@ namespace XamalTiler
 						Show_Button(3);
 						Show_Button(7);
 						Show_Button(8);
-						Show_Button(15);
+						Show_Button(20);
 						//Show_Button(10);
 						//Show_Button(11);
 						//Show_Button(12);
@@ -254,6 +254,8 @@ namespace XamalTiler
 
 					UpDate_Draw_Style_Image();
 
+					Draw_SpreadRenderTarget();
+
 					_usingRandomSpread = false;
 					break;
 				case 8:
@@ -263,12 +265,14 @@ namespace XamalTiler
 
 					UpDate_Draw_Style_Image();
 
+					Draw_SpreadRenderTarget();
+
 					_usingRandomSpread = false;
 					break;
 				case 9:
-					NewRandom_ColourSeries();
-
 					UpDate_Draw_Style_Image();
+
+					Draw_SpreadRenderTarget();
 					break;
 				case 10:
 					switch (_colourType)
@@ -316,6 +320,8 @@ namespace XamalTiler
 					NewRandom_ColourSeries2();
 
 					UpDate_Draw_Style_Image();
+
+					Draw_SpreadRenderTarget();
 					break;
 				case 13:
 					switch (_imageDrawStyle)
@@ -375,11 +381,10 @@ namespace XamalTiler
 					if (!_usingRandomSpread || index != _colorSetNewID)
 					{
 						Set_RandomCol_Current(_colorSetNewID);
-					
-						UpDate_Draw_Style_Image();
-						//Create_Image.Update_Image_Full();
 
-						//_drawImageTarget = true;
+						UpDate_Draw_Style_Image();
+
+						Draw_SpreadRenderTarget();
 					}
 					break;
 				case 17:
@@ -393,13 +398,16 @@ namespace XamalTiler
 
 						UpDate_Draw_Style_Image();
 
-						//_usingRandomSpread = true;
-						//_drawImageTarget = true;
+						Draw_SpreadRenderTarget();
 					}
 					break;
 				case 18:
-					if (Del_New_RandomColorSet()) 
+					if (Del_New_RandomColorSet())
+					{
 						UpDate_Draw_Style_Image();
+
+						Draw_SpreadRenderTarget();
+					}
 					break;
 				default:
 					break;
