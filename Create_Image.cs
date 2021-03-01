@@ -42,7 +42,7 @@ namespace XamalTiler
 
 
         internal static void Update_Image_Full()
-		{
+        {
             int index = 0;
 
             Set_CurrentColourSet(_currentColorSetID);
@@ -125,19 +125,19 @@ namespace XamalTiler
 
                     hits /= 4;
 
-					switch (_colourType)
-					{
-						case ColourType.Linear:
-							break;
-						case ColourType.SquareRoot:
+                    switch (_colourType)
+                    {
+                        case ColourType.Linear:
+                            break;
+                        case ColourType.SquareRoot:
                             hits = (int)Math.Sqrt(hits);
                             break;
                         case ColourType.Stretch:
                             hits = (int)(hits * dhits);
                             break;
-						default:
-							break;
-					}
+                        default:
+                            break;
+                    }
 
                     if (hits > _currentSpreadCount)
                         hits = _currentSpreadCount;
@@ -507,6 +507,8 @@ namespace XamalTiler
                     if (hits > _maxHits) _maxHits = hits;
                 }
             }
+
+            Hits._maxHitsCounted = true;
         }
 
         internal static void Find_Total_Hits()

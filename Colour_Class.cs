@@ -404,7 +404,6 @@ namespace XamalTiler
             if (Hits._maxHitsCounted == false) Create_Image.Find_Max_Hits();
 
             hits = (int)Create_Image._maxHits;
-                //(int)(Create_Image._maxHits / 2.0f) + _colourRand.Next((int)Create_Image._maxHits);
 
             if (hits < 256) hits = 256;
             else if (hits > 2048) hits = 2048;

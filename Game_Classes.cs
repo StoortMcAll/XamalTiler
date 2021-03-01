@@ -53,16 +53,10 @@ namespace XamalTiler
                     y = local._y;
 
                     hits = ++_field[x, y];
-                   
-                    if (hits > _maxHits) _maxHits = hits;
-                    //if (_colourType == ColourType.SquareRoot) hits = (int)Math.Sqrt(hits);
-
-     //               if (_maxHits > _iterCounter)
-					//{
-     //                   hit = (int)hits;
-     //               }
 
                     if (hits > cscount) hits = cscount;
+                    if (hits > _maxHits) _maxHits = hits;
+
                     hit = _adjustSpreadVertices[(int)hits];
 
                     index = y * _stride + x * 4;
@@ -92,8 +86,6 @@ namespace XamalTiler
 
                 c = new double[sectors];
                 s = new double[sectors];
-
-               // double mult = 1.0d / (double)sectors;
 
                 for (int i = 0; i < sectors; i++)
                 {

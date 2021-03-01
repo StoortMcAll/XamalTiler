@@ -12,7 +12,7 @@ namespace XamalTiler
 		#region Variable Declaration
 
 		internal static bool _isBbuttonActive;
-        static int _buttonID = -1;
+		static int _buttonID = -1;
 		internal static Vector2[] _startVectors = new Vector2[2] { Vector2.Zero, Vector2.Zero };
         
 		static float _imageScaleTemp;
@@ -26,7 +26,7 @@ namespace XamalTiler
 
 
 		internal static int Update_Input()
-        {
+		{
 			if (_isBbuttonActive)
 			{
 				if (_userInputType == UserInputType.Release)
