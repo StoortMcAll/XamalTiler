@@ -68,6 +68,8 @@ namespace XamalTiler
 											_canvasLocal = WindowPoint_To_Canvas(_startVectors[0]);
 
 											Set_ImageOffset();
+									
+											_pointLocal = _canvasLocal;
 
 											_drawImageTarget = true;
 										}
@@ -87,14 +89,23 @@ namespace XamalTiler
 
 											if (_length2 != 0) _dif = _length2 / _length;
 
+
+											Find_Point_Location(Gesture_Centre(_startVectors));
+
+											//_canvasLocal = WindowPoint_To_Canvas(Gesture_Centre(_startVectors));
+
 											_imageScale = _imageScaleTemp * _dif;
 
 											if (_imageScale < 0.25f) _imageScale = 0.25f;
 											else if (_imageScale > 12.0f) _imageScale = 12.0f;
 
-											_canvasLocal = WindowPoint_To_Canvas(Gesture_Centre(_startVectors));
+											_imageOffset = _canvasLocal - _pointLocal * _imageScale;
+
+											_canvasLocal = _pointLocal = Vector2.Zero;
 
 											Set_ImageOffset();
+
+											_pointLocal = _canvasLocal;
 
 											_drawImageTarget = true;
 										}
@@ -210,7 +221,10 @@ namespace XamalTiler
 
 										_activeGestureType = GestureType.FreeDrag;
 
-										Find_Point_Location(_startVectors[0]);
+
+										_pointLocal = WindowPoint_To_Canvas(_startVectors[0]);
+
+										//Find_Point_Location(_startVectors[0]);
 
 										//User_Input.Update_Input();
 
@@ -242,7 +256,8 @@ namespace XamalTiler
 
 										_activeGestureType = GestureType.Pinch;
 
-										Find_Point_Location(Gesture_Centre(_startVectors));
+										_pointLocal = WindowPoint_To_Canvas(Gesture_Centre(_startVectors));
+										//Find_Point_Location(Gesture_Centre(_startVectors));
 
 										_imageScaleTemp = _imageScale;
 
@@ -296,9 +311,9 @@ namespace XamalTiler
 		internal static void Set_ImageOffset()
 		{
 			if (_imageScale <= 0) return;
-			
-			_imageOffset = _canvasLocal - _pointLocal * _imageScale;
 
+			_imageOffset += (_canvasLocal - _pointLocal);// * (1.0f / _imageScale);
+			
 			if (_imageOffset.X > 0)
 			{
 				while (_imageOffset.X > 0)
@@ -362,7 +377,7 @@ namespace XamalTiler
 			winLocation -= buttonrect.Location.ToVector2();
 			winLocation.X *= _imageRenderTarget.Width / (float)buttonrect.Width;
 			winLocation.Y *= _imageRenderTarget.Height / (float)buttonrect.Width;
-
+			
 			return winLocation;
 		}
 

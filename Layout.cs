@@ -55,6 +55,8 @@ namespace XamalTiler
 
 			Add_Layout(0, dividers);
 
+			//dividers[1] = new Divider(1, area2, new Point(1, 1));
+
 			int butwid = (grid.Width - 2) / 3;
 
 			Rectangle start = new Rectangle(0, 0, butwid, 1);
@@ -101,7 +103,7 @@ namespace XamalTiler
 
 
 
-			start = new Rectangle(0, 0, 1, 1);
+			start = new Rectangle(Point.Zero, dividers[1]._grid);
 			Add_Button(4, 1, start, _imageRenderTarget,  MyButtonState.Visible, UserInputType.PinchDrag);
 
 			#endregion

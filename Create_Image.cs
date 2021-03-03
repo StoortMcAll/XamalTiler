@@ -9,6 +9,7 @@ using static XamalTiler.Game1;
 using static XamalTiler.Iterate_Class;
 using static XamalTiler.ScreenShot;
 using static XamalTiler.Colour_Class;
+using zzz;
 
 namespace XamalTiler
 {
@@ -327,7 +328,7 @@ namespace XamalTiler
         internal static void Draw_Target()
         {
             Rectangle outRect;
-
+          
             _outRects.Clear();
 
             _graphicsDevice.SetRenderTarget(_imageRenderTarget);
@@ -363,21 +364,23 @@ namespace XamalTiler
         internal static void Draw_FullScreen()
         {
             if (_saveImageState != SaveImageState.Ready) return;
-
+           
             _graphicsDevice.SetRenderTarget(_fullScreenTarget);
             _graphicsDevice.Clear(Color.TransparentBlack);
 
+            Vector2 fscale = new Vector2(_fullScreenTarget.Width / (float)_imageRenderTarget.Width) * _imageScale;
+          
             _outRects.Clear();
 
             Rectangle outRect = _tileTexture.Bounds;
-            outRect.Size = (outRect.Size.ToVector2() * _imageScale).ToPoint();
-            outRect.Location = _imageOffset.ToPoint();
+            outRect.Size = (outRect.Size.ToVector2() * fscale).ToPoint();
+            outRect.Location = (_imageOffset * fscale).ToPoint();
 
             _spriteBatch.Begin();
 
             do
             {
-                outRect.X = (int)_imageOffset.X - 10;
+                outRect.X = (int)_imageOffset.X;// - 10;
 
                 do
                 {
