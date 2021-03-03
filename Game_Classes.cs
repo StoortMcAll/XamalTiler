@@ -54,8 +54,8 @@ namespace XamalTiler
 
                     hits = ++_field[x, y];
 
-                    if (hits > cscount) hits = cscount;
                     if (hits > _maxHits) _maxHits = hits;
+                    if (hits > cscount) hits = cscount;
 
                     hit = _adjustSpreadVertices[(int)hits];
 

@@ -243,9 +243,6 @@ namespace XamalTiler
 
                 float dx = (r2 - r1) / (float)maxd;
 
-                //float dx = r2 - r1;
-                //float fmax = 1.0f / maxd;
-
                 if (dx == 0)
                     for (int i = 1; i < maxd; i++)
                         results[i] = (byte)r1;
@@ -395,7 +392,7 @@ namespace XamalTiler
 
             bool firstpass = true, high = false;
 
-            int hits, value, lastvalue = 0, index = 0, counter = 0, mult = 32;
+            int maxnewcols, value, lastvalue = 0, index = 0, counter = 0, mult = 32;
 
             _colourRand = new Random();
 
@@ -403,14 +400,14 @@ namespace XamalTiler
 
             if (Hits._maxHitsCounted == false) Create_Image.Find_Max_Hits();
 
-            hits = (int)Create_Image._maxHits;
+            maxnewcols = (int)Create_Image._maxHits;
 
-            if (hits < 256) hits = 256;
-            else if (hits > 2048) hits = 2048;
+            if (maxnewcols < 256) maxnewcols = 256;
+            else if (maxnewcols > 2048) maxnewcols = 2048;
 
             Color color;
 
-            while (index < (int)hits)
+            while (index < (int)maxnewcols)
             {
                 bool valbad = true;
 
@@ -449,6 +446,67 @@ namespace XamalTiler
 
             Add_New_RandomColorSet(new Color_Set(new ColorRanges(colorlist)));
         }
+
+        internal static void NewRandom_ColourSeries3()
+        {
+            List<ColorRange> colorlist = new List<ColorRange>();
+
+            int maxnewcols, primarycolsindex, lastprimarycolsindex;
+            int counter, colourrangecounter = 0, colourlistindex = 0;
+
+            _colourRand = new Random();
+
+            Set_PrimaryColour_Choice();
+
+            if (Hits._maxHitsCounted == false) Create_Image.Find_Max_Hits();
+
+            maxnewcols = (int)Create_Image._maxHits;
+
+            if (maxnewcols < 256) maxnewcols = 256;
+            else if (maxnewcols > 2048) maxnewcols = 2048;
+
+            Color color;
+
+            lastprimarycolsindex = _colourRand.Next(PrimaryColourCount);
+
+            colorlist.Add(new ColorRange(0, PrimaryColors[lastprimarycolsindex]));
+
+            while (colourrangecounter < (int)maxnewcols)
+            {
+                do
+                {
+                    primarycolsindex = _colourRand.Next(PrimaryColourCount);
+                } while (lastprimarycolsindex == primarycolsindex);
+
+                lastprimarycolsindex = primarycolsindex;
+
+                color = PrimaryColors[primarycolsindex];
+
+                counter = Max_Difference_Between(colorlist[colourlistindex++]._color, color);
+
+                colourrangecounter += counter;
+
+                colorlist.Add(new ColorRange(counter, color)); // PrimaryColors[value]));
+
+            }
+
+            Add_New_RandomColorSet(new Color_Set(new ColorRanges(colorlist)));
+        }
+
+
+        private static int Max_Difference_Between(Color color1, Color color2)
+		{
+            int dif = MathHelper.Max(
+                Math.Abs((int)color1.R - (int)color2.R),
+                Math.Abs((int)color1.B - (int)color2.B));
+
+            dif = MathHelper.Max(
+                dif,
+                Math.Abs((int)color1.G - (int)color2.G));
+
+            return dif;
+        }
+
 
         internal static void Add_New_RandomColorSet(Color_Set colorset)
 		{

@@ -10,7 +10,6 @@ using static XamalTiler.Iterate_Class;
 using static XamalTiler.ScreenShot;
 using static XamalTiler.Colour_Class;
 
-
 namespace XamalTiler
 {
 	internal static class Create_Image
@@ -18,9 +17,9 @@ namespace XamalTiler
 
         #region Variable Declaration
 
-        internal enum ImageDrawStyle { Basic, Smooth, Smooth2, Average }
+        internal enum ImageDrawStyle { Sharp, Smooth, Smooth2, Average }
       
-        internal static ImageDrawStyle _imageDrawStyle = ImageDrawStyle.Basic;
+        internal static ImageDrawStyle _imageDrawStyle = ImageDrawStyle.Sharp;
         internal static ColourType _colourType = ColourType.Linear;
 
         internal static byte[] _pixelData;
@@ -32,8 +31,8 @@ namespace XamalTiler
         internal static bool _updateAll;
 
         internal static GraphicsDevice _graphicsDevice;
-        internal static SpriteBatch _spriteBatch;
 
+        internal static SpriteBatch _spriteBatch;
 
         internal static List<Rectangle> _outRects = new List<Rectangle>();
 
@@ -49,13 +48,14 @@ namespace XamalTiler
 
             Colour_Class.Set_Vertices();
 
+            int hits;
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
             for (int y = 0; y < _fieldHeight; y++)
             {
                 for (int x = 0; x < _fieldWidth; x++)
                 {
-                    int hits = _field[x, y];
+                    hits = _field[x, y];
 
                     switch (_colourType)
                     {
@@ -76,7 +76,6 @@ namespace XamalTiler
 
                     hits = _adjustSpreadVertices[hits];
 
-
                     _pixelData[index++] = _colorSpread[hits].R;
                     _pixelData[index++] = _colorSpread[hits].G;
                     _pixelData[index++] = _colorSpread[hits].B;
@@ -87,6 +86,7 @@ namespace XamalTiler
             _tileTexture.SetData(_pixelData);
 
         }
+
 
         internal static void Update_Image_Full_Smooth()
         {
@@ -142,7 +142,7 @@ namespace XamalTiler
                     if (hits > _currentSpreadCount)
                         hits = _currentSpreadCount;
 
-                    //var index = _fPosx[y] * stride + _fPosx[x] * 4;
+                    hits = _adjustSpreadVertices[hits];
 
                     _pixelData[index++] = _colorSpread[hits].R;
                     _pixelData[index++] = _colorSpread[hits].G;
@@ -222,6 +222,8 @@ namespace XamalTiler
                     if (hits > _currentSpreadCount)
                         hits = _currentSpreadCount;
 
+                    hits = _adjustSpreadVertices[hits];
+
                     _pixelData[index++] = _colorSpread[hits].R;
                     _pixelData[index++] = _colorSpread[hits].G;
                     _pixelData[index++] = _colorSpread[hits].B;
@@ -236,7 +238,7 @@ namespace XamalTiler
         {
             int index = 0;
 
-            int r, g, b, dxc;
+            byte r, g, b;
 
             Color color;
 
@@ -255,9 +257,7 @@ namespace XamalTiler
             _fPosy[0] = _fieldHeight - 1;
             _fPosy[_fieldHeight + 1] = 0;
 
-            int[] hitstore = new int[9];
-
-            int[] dxcol = new int[9] { 1, 2, 2, 2, 2, 4, 4, 4, 4 };//25
+            int[] hitstore = new int[5];
 
             for (int y = 1; y < _fieldHeight + 1; y++) _fPosy[y] = y - 1;
 
@@ -272,14 +272,8 @@ namespace XamalTiler
 					hitstore[3] = (int)(_field[_fPosx[x], _fPosx[y - 1]]); // 100 %
 					hitstore[4] = (int)(_field[_fPosx[x], _fPosx[y + 1]]); // 100 %
 
-					hitstore[5] = (int)(_field[_fPosx[x - 1], _fPosx[y - 1]]); // 100 %
-					hitstore[6] = (int)(_field[_fPosx[x + 1], _fPosx[y - 1]]); // 100 %
-					hitstore[7] = (int)(_field[_fPosx[x - 1], _fPosx[y + 1]]); // 100 %
-					hitstore[8] = (int)(_field[_fPosx[x + 1], _fPosx[y + 1]]); // 100 %
-
 					for (int i = 0; i < 9; i++)
                     {
-
                         switch (_colourType)
                         {
                             case ColourType.Linear:
@@ -298,27 +292,18 @@ namespace XamalTiler
                             hitstore[i] = _currentSpreadCount;
                     }
 
-                    r = _colorSpread[hitstore[0]].R;
-                    g = _colorSpread[hitstore[0]].G;
-                    b = _colorSpread[hitstore[0]].B;
+                    r = g = b = 0;
 
-
-                    int tr, tg, tb;
-
-                    for (int i = 1; i < 9; i++)
+                    for (int i = 0; i < 5; i++)
 					{
-                        dxc = dxcol[i];
-                        color = _colorSpread[hitstore[i]];
-                        tr = color.B / dxc;
-                        tg = color.G / dxc;
-                        tb = color.B / dxc;
-
-                        r += color.R / dxc;
-                        g += color.G / dxc;
-                        b += color.B / dxc;
+                        color = _colorSpread[_adjustSpreadVertices[hitstore[i]]];
+                     
+                        r += color.R;
+                        g += color.G;
+                        b += color.B;
                     }
 
-                    r /= 4;g /= 4;b /= 4;
+                    r /= 5;g /= 5;b /= 5;
                    
 
                     if (r < 0) r = 0;
@@ -442,6 +427,7 @@ namespace XamalTiler
 
             _graphicsDevice.SetRenderTarget(null);
         }
+
 
 
         internal static void Poll_FieldData()

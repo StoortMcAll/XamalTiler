@@ -26,6 +26,8 @@ namespace XamalTiler
 		{
 			Create_Image._pixelData = new byte[_fieldHeight * _fieldWidth * 4];
 
+			Colour_Class.Set_Vertices();
+
 			List<Divider> dividers = new List<Divider>();
 
 			Init_Layouts(graphicsDevice, spriteBatch, screenSize);

@@ -11,7 +11,7 @@ namespace XamalTiler
     {
 		#region Variable Declaration
 
-		internal static bool _isBbuttonActive;
+		internal static bool _isBbuttonActive, _updateImageTex;
 		static int _buttonID = -1;
 		internal static Vector2[] _startVectors = new Vector2[2] { Vector2.Zero, Vector2.Zero };
         
@@ -29,10 +29,12 @@ namespace XamalTiler
 		{
 			if (_isBbuttonActive)
 			{
-				if (_userInputType == UserInputType.Release)
+				if (_userInputType == UserInputType.Release || !TouchPanel.IsGestureAvailable)
 				{
 					_isBbuttonActive = false;
 					_buttonID = -1;
+
+					return _buttonID;
 				}
 
 				while (TouchPanel.IsGestureAvailable)
@@ -41,6 +43,7 @@ namespace XamalTiler
 
 					if (_isBbuttonActive)
 					{
+
 						switch (_userInputType)
 						{
 							case UserInputType.Press:
@@ -48,10 +51,12 @@ namespace XamalTiler
 									_isBbuttonActive = false;
 								_buttonID = -1;
 								break;
+
 							case UserInputType.Release:
 								_isBbuttonActive = false;
 								_buttonID = -1;
 								break;
+
 							case UserInputType.PinchDrag:
 								_startVectors[0] = _gestureSample.Position;
 
@@ -71,6 +76,7 @@ namespace XamalTiler
 											_isBbuttonActive = false;
 											_buttonID = -1;
 										}
+
 										break;
 
 									case GestureType.Pinch:
@@ -79,12 +85,12 @@ namespace XamalTiler
 											_startVectors[1] = _gestureSample.Position2;
 											_length2 = (_startVectors[0] - _startVectors[1]).Length();
 
-											_dif = _length2 / _length;
+											if (_length2 != 0) _dif = _length2 / _length;
 
 											_imageScale = _imageScaleTemp * _dif;
 
 											if (_imageScale < 0.25f) _imageScale = 0.25f;
-											else if (_imageScale > 8.0f) _imageScale = 8.0f;
+											else if (_imageScale > 12.0f) _imageScale = 12.0f;
 
 											_canvasLocal = WindowPoint_To_Canvas(Gesture_Centre(_startVectors));
 
@@ -97,6 +103,7 @@ namespace XamalTiler
 											_isBbuttonActive = false;
 											_buttonID = -1;
 										}
+
 										break;
 									
 									default:
@@ -105,6 +112,7 @@ namespace XamalTiler
 										break;
 								}
 								break;
+
 							case UserInputType.Drag:
 								if (_gestureSample.GestureType == GestureType.FreeDrag)
 								{
@@ -114,24 +122,22 @@ namespace XamalTiler
 
 									if (Colour_Class.Adjust_Spread(_dif))
 									{
-										Colour_Class.Draw_SpreadRenderTarget();
-
 										_pointLocal = _canvasLocal;
-									}
 
-									_drawImageTarget = true;
+										_updateImageTex = true;
+										_drawImageTarget = true;
+									}
 								}
 								else
 								{
-									if (_buttonID == 20)
-									{
-										Create_Image.Update_Image_Full();
-										_drawImageTarget = true;
-									}
-
+									if (_buttonID == 20) _drawImageTarget = true;
+									
 									_isBbuttonActive = false;
 									_buttonID = -1;
 								}
+
+								
+
 								break;
 							default:
 								break;
@@ -139,10 +145,29 @@ namespace XamalTiler
 
 					}
 				}
+
+				if (_updateImageTex)
+				{
+					Colour_Class.Draw_SpreadRenderTarget();
+
+					if (_currentLayoutID == 1)
+						Menu_Class.UpDate_Draw_Style_Image();
+					else
+						Create_Image.Update_Image_Full();
+
+					_updateImageTex = false;
+				}
 			}
 			else
 			{
-				if (!TouchPanel.IsGestureAvailable) _activeGestureType = GestureType.None;
+				if (!TouchPanel.IsGestureAvailable)
+				{
+					_buttonID = -1;
+					_isBbuttonActive = false;
+					_activeGestureType = GestureType.None;
+
+					return _buttonID;
+				}
 
 				while (TouchPanel.IsGestureAvailable)
 				{
@@ -177,6 +202,7 @@ namespace XamalTiler
 										_isBbuttonActive = false;
 									}
 									break;
+
 								case GestureType.FreeDrag:
 									if (_userInputType == UserInputType.PinchDrag)
 									{
@@ -186,7 +212,7 @@ namespace XamalTiler
 
 										Find_Point_Location(_startVectors[0]);
 
-										User_Input.Update_Input();
+										//User_Input.Update_Input();
 
 										return _buttonID;
 									}
@@ -198,7 +224,7 @@ namespace XamalTiler
 
 										_pointLocal = WindowPoint_To_Canvas(_startVectors[0]);
 
-										User_Input.Update_Input();
+										//User_Input.Update_Input();
 
 										return _buttonID;
 									}
@@ -208,6 +234,7 @@ namespace XamalTiler
 										_isBbuttonActive = false;
 									}
 									break;
+
 								case GestureType.Pinch:
 									if (_userInputType == UserInputType.PinchDrag)
 									{
@@ -220,8 +247,9 @@ namespace XamalTiler
 										_imageScaleTemp = _imageScale;
 
 										_length = (_startVectors[0] - _startVectors[1]).Length();
+										if (_length == 0) _length = 0.1f;
 
-										User_Input.Update_Input();
+										//User_Input.Update_Input();
 
 										return _buttonID;
 									}
@@ -240,17 +268,23 @@ namespace XamalTiler
 
 										Find_Point_Location(_startVectors[0]);
 
-										User_Input.Update_Input();
+										//User_Input.Update_Input();
 
 										return _buttonID;
 									}
 									break;
+
 								default:
 									_buttonID = -1;
 									_isBbuttonActive = false;
 									break;
 							}
 						}
+					}
+					else
+					{
+						_buttonID = -1;
+						_isBbuttonActive = false;
 					}
 				}
 			}
@@ -261,16 +295,40 @@ namespace XamalTiler
 
 		internal static void Set_ImageOffset()
 		{
+			if (_imageScale <= 0) return;
+			
 			_imageOffset = _canvasLocal - _pointLocal * _imageScale;
 
-			while (_imageOffset.X > 0) _imageOffset.X -= _tileTexture.Width * _imageScale;
-			while (_imageOffset.Y > 0) _imageOffset.Y -= _tileTexture.Height * _imageScale;
+			if (_imageOffset.X > 0)
+			{
+				while (_imageOffset.X > 0)
+				{
+					_imageOffset.X -= _tileTexture.Width * _imageScale;
+				}
+			}
+			else if (_imageOffset.X < -_tileTexture.Width * _imageScale)
+			{
+				while (_imageOffset.X < -_tileTexture.Width * _imageScale)
+				{
+					_imageOffset.X += _tileTexture.Width * _imageScale;
+				}
+			}
 
-			while (_imageOffset.X < -_tileTexture.Width * _imageScale)
-				_imageOffset.X += _tileTexture.Width * _imageScale;
-			while (_imageOffset.Y < -_tileTexture.Height * _imageScale)
-				_imageOffset.Y += _tileTexture.Height * _imageScale;
-
+			if (_imageOffset.Y > 0)
+			{
+				while (_imageOffset.Y > 0)
+				{
+					_imageOffset.Y -= _tileTexture.Height * _imageScale;
+				}
+			}
+			else if (_imageOffset.Y < -_tileTexture.Height * _imageScale)
+			{
+				while (_imageOffset.Y < -_tileTexture.Height * _imageScale)
+				{
+					_imageOffset.Y += _tileTexture.Height * _imageScale;
+				}
+			}
+			
 		}
 
 

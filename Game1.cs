@@ -140,7 +140,9 @@ namespace XamalTiler
 		protected override void Initialize()
 		{
 			base.Initialize();
-			
+
+			DebugWindow.Initialise(this, graphics, spriteBatch);
+
 			_viewport = GraphicsDevice.Viewport;
 
 			if (_viewport.Width != graphics.PreferredBackBufferWidth || _viewport.Height != graphics.PreferredBackBufferHeight)
@@ -187,8 +189,6 @@ namespace XamalTiler
 			GraphicsDevice.SetRenderTarget(null);
 
 			Colour_Class.Draw_SpreadRenderTarget();
-
-			DebugWindow.Initialise(this, graphics, spriteBatch);
 
 			//DistributionClass.Initialise();
 
@@ -301,6 +301,8 @@ namespace XamalTiler
 								My_Layouts.Change_Button_Text(2,
 									"Max - " + Create_Image._maxHits.ToString() +
 									" of " + Colour_Class._currentColorSet._colorSpreadCount.ToString());
+
+								
 
 								//_iterCounter = 0;
 

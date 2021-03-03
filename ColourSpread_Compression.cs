@@ -77,7 +77,7 @@ namespace XamalTiler
 
 			_adjustSpreadVertices = ResizeVerticesToWorldCoords(scale, _currentColorSet._colorSpreadCount);
 
-			_adjustSpreadCount = _adjustSpreadVertices.Length;
+			_adjustSpreadCount = _adjustSpreadVertices.Length - 1;
 
 			_AdjustSpreadSet = true;
 		}

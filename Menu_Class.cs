@@ -203,7 +203,7 @@ namespace XamalTiler
 			switch (_buttonHit)
 			{
 				case 0:
-					_imageDrawStyle = ImageDrawStyle.Basic;
+					_imageDrawStyle = ImageDrawStyle.Sharp;
 					My_Layouts.Change_Button_Text(3, "Sharp Image");
 
 					_colourType = ColourType.Linear;
@@ -213,27 +213,7 @@ namespace XamalTiler
 
 					My_Layouts.Activate_Layout(0);
 					break;
-				case 2:
-					switch (_colourType)
-					{
-						case ColourType.Linear:
-							_colourType = ColourType.Stretch;
-							My_Layouts.Change_Button_Text(2, "Stretch"); 
-							break;
-						case ColourType.Stretch:
-							_colourType = ColourType.SquareRoot;
-							My_Layouts.Change_Button_Text(2, "SquareRoot");
-							break;
-						case ColourType.SquareRoot:
-							_colourType = ColourType.Linear;
-							My_Layouts.Change_Button_Text(2, "Linear");
-							break;
-						default:
-							break;
-					}
-
-					UpDate_Draw_Style_Image();
-					break;
+			
 				case 4:
 					Create_Image.Shift_Minimum_Hit_To_Zero();
 
@@ -317,62 +297,86 @@ namespace XamalTiler
 					UpDate_Draw_Style_Image();
 					break;
 				case 12:
-					NewRandom_ColourSeries2();
+					//todo ColourSeries2
+					NewRandom_ColourSeries3();
 
 					UpDate_Draw_Style_Image();
 
 					Draw_SpreadRenderTarget();
 					break;
 				case 13:
-					switch (_imageDrawStyle)
-					{
-						case ImageDrawStyle.Basic:
-							_imageDrawStyle = ImageDrawStyle.Average;
-							My_Layouts.Change_Button_Text(3, "Average Image");
-							break;
-						case ImageDrawStyle.Smooth:
-							_imageDrawStyle = ImageDrawStyle.Basic;
-							My_Layouts.Change_Button_Text(3, "Sharp Image");
-							break;
-						case ImageDrawStyle.Smooth2:
-							_imageDrawStyle = ImageDrawStyle.Smooth;
-							My_Layouts.Change_Button_Text(3, "Smooth Image");
-							break;
-						case ImageDrawStyle.Average:
-							_imageDrawStyle = ImageDrawStyle.Smooth2;
-							My_Layouts.Change_Button_Text(3, "Smooth2 Image");
-							break;
-						default:
-							break;
-					}
+					if (_imageDrawStyle == ImageDrawStyle.Sharp)
+						_imageDrawStyle = ImageDrawStyle.Average;
+					else
+						_imageDrawStyle = _imageDrawStyle - 1;
+
+					My_Layouts.Change_Button_Text(3, _imageDrawStyle.ToString() + " Image");
+
+					//switch (_imageDrawStyle)
+					//{
+					//	case ImageDrawStyle.Sharp:
+					//		_imageDrawStyle = ImageDrawStyle.Average;
+					//		My_Layouts.Change_Button_Text(3, "Average Image");
+					//		break;
+
+					//	case ImageDrawStyle.Smooth:
+					//		_imageDrawStyle = ImageDrawStyle.Sharp;
+					//		My_Layouts.Change_Button_Text(3, "Sharp Image");
+					//		break;
+
+					//	case ImageDrawStyle.Smooth2:
+					//		_imageDrawStyle = ImageDrawStyle.Smooth;
+					//		My_Layouts.Change_Button_Text(3, "Smooth Image");
+					//		break;
+
+					//	case ImageDrawStyle.Average:
+					//		_imageDrawStyle = ImageDrawStyle.Smooth2;
+					//		My_Layouts.Change_Button_Text(3, "Smooth2 Image");
+					//		break;
+
+					//	default:
+					//		break;
+					//}
 
 					UpDate_Draw_Style_Image();
 					break;
 				case 14:
-					switch (_imageDrawStyle)
-					{
-						case ImageDrawStyle.Basic:
-							_imageDrawStyle = ImageDrawStyle.Smooth;
-							My_Layouts.Change_Button_Text(3, "Smooth Image");
-							break;
-						case ImageDrawStyle.Smooth:
-							_imageDrawStyle = ImageDrawStyle.Smooth2;
-							My_Layouts.Change_Button_Text(3, "Smooth2 Image");
-							break;
-						case ImageDrawStyle.Smooth2:
-							_imageDrawStyle = ImageDrawStyle.Average;
-							My_Layouts.Change_Button_Text(3, "Average Image");
-							break;
-						case ImageDrawStyle.Average:
-							_imageDrawStyle = ImageDrawStyle.Basic;
-							My_Layouts.Change_Button_Text(3, "Sharp Image");
-							break;
-						default:
-							break;
-					}
+					if (_imageDrawStyle == ImageDrawStyle.Average)
+						_imageDrawStyle = ImageDrawStyle.Sharp;
+					else
+						_imageDrawStyle = _imageDrawStyle + 1;
+
+					My_Layouts.Change_Button_Text(3, _imageDrawStyle.ToString() + " Image");
+
+					//switch (_imageDrawStyle)
+					//{
+					//	case ImageDrawStyle.Sharp:
+					//		_imageDrawStyle = ImageDrawStyle.Smooth;
+					//		My_Layouts.Change_Button_Text(3, "Smooth Image");
+					//		break;
+
+					//	case ImageDrawStyle.Smooth:
+					//		_imageDrawStyle = ImageDrawStyle.Smooth2;
+					//		My_Layouts.Change_Button_Text(3, "Smooth2 Image");
+					//		break;
+
+					//	case ImageDrawStyle.Smooth2:
+					//		_imageDrawStyle = ImageDrawStyle.Average;
+					//		My_Layouts.Change_Button_Text(3, "Average Image");
+					//		break;
+
+					//	case ImageDrawStyle.Average:
+					//		_imageDrawStyle = ImageDrawStyle.Sharp;
+					//		My_Layouts.Change_Button_Text(3, "Sharp Image");
+					//		break;
+
+					//	default:
+					//		break;
+					//}
 
 					UpDate_Draw_Style_Image();
 					break;
+
 				case 16:
 					index = _colorSetNewID;
 
@@ -387,6 +391,7 @@ namespace XamalTiler
 						Draw_SpreadRenderTarget();
 					}
 					break;
+
 				case 17:
 					index = _colorSetNewID;
 
@@ -401,6 +406,7 @@ namespace XamalTiler
 						Draw_SpreadRenderTarget();
 					}
 					break;
+
 				case 18:
 					if (Del_New_RandomColorSet())
 					{
@@ -409,6 +415,7 @@ namespace XamalTiler
 						Draw_SpreadRenderTarget();
 					}
 					break;
+
 				default:
 					break;
 			}
@@ -455,11 +462,11 @@ namespace XamalTiler
 		}
 
 
-		private static void UpDate_Draw_Style_Image()
+		internal static void UpDate_Draw_Style_Image()
 		{
 			switch (_imageDrawStyle)
 			{
-				case ImageDrawStyle.Basic:
+				case ImageDrawStyle.Sharp:
 					Update_Image_Full();
 					break;
 				case ImageDrawStyle.Smooth:
