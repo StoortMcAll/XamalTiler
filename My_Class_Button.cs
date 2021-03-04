@@ -291,7 +291,7 @@ namespace XamalTiler
 				}
 				else
 				{
-					_spriteBatch.Draw(_1by1, _area, _background * (_isTransparent ? 0.25f : 1.0f));
+					_spriteBatch.Draw(_1by1, _area, _background * (_isTransparent ? 0.7125f : 1.0f));
 
 					if (_hasText)
 					{

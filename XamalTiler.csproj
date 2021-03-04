@@ -115,6 +115,7 @@
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenShot.cs" />
+    <Compile Include="Updater_Class.cs" />
     <Compile Include="User_Input.cs" />
   </ItemGroup>
   <ItemGroup>

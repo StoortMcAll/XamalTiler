@@ -67,9 +67,9 @@ namespace XamalTiler
 										{
 											_canvasLocal = WindowPoint_To_Canvas(_startVectors[0]);
 
+											_imageOffset = _canvasLocal - _pointLocal * _imageScale;
+
 											Set_ImageOffset();
-									
-											_pointLocal = _canvasLocal;
 
 											_drawImageTarget = true;
 										}
@@ -89,10 +89,7 @@ namespace XamalTiler
 
 											if (_length2 != 0) _dif = _length2 / _length;
 
-
-											Find_Point_Location(Gesture_Centre(_startVectors));
-
-											//_canvasLocal = WindowPoint_To_Canvas(Gesture_Centre(_startVectors));
+											_canvasLocal = WindowPoint_To_Canvas(Gesture_Centre(_startVectors));
 
 											_imageScale = _imageScaleTemp * _dif;
 
@@ -101,11 +98,7 @@ namespace XamalTiler
 
 											_imageOffset = _canvasLocal - _pointLocal * _imageScale;
 
-											_canvasLocal = _pointLocal = Vector2.Zero;
-
 											Set_ImageOffset();
-
-											_pointLocal = _canvasLocal;
 
 											_drawImageTarget = true;
 										}
@@ -135,8 +128,15 @@ namespace XamalTiler
 									{
 										_pointLocal = _canvasLocal;
 
-										_updateImageTex = true;
+										Colour_Class.Draw_SpreadRenderTarget();
+										//_updateImageTex = true;
+										if (_currentLayoutID == 1)
+											Menu_Class.UpDate_Draw_Style_Image();
+										else
+											Create_Image.Update_Image_Full();
 										_drawImageTarget = true;
+
+										return _buttonID;
 									}
 								}
 								else
@@ -147,8 +147,6 @@ namespace XamalTiler
 									_buttonID = -1;
 								}
 
-								
-
 								break;
 							default:
 								break;
@@ -157,17 +155,17 @@ namespace XamalTiler
 					}
 				}
 
-				if (_updateImageTex)
-				{
-					Colour_Class.Draw_SpreadRenderTarget();
+				//if (_updateImageTex)
+				//{
+				//	Colour_Class.Draw_SpreadRenderTarget();
 
-					if (_currentLayoutID == 1)
-						Menu_Class.UpDate_Draw_Style_Image();
-					else
-						Create_Image.Update_Image_Full();
+				//	if (_currentLayoutID == 1)
+				//		Menu_Class.UpDate_Draw_Style_Image();
+				//	else
+				//		Create_Image.Update_Image_Full();
 
-					_updateImageTex = false;
-				}
+				//	_updateImageTex = false;
+				//}
 			}
 			else
 			{
@@ -221,12 +219,9 @@ namespace XamalTiler
 
 										_activeGestureType = GestureType.FreeDrag;
 
-
 										_pointLocal = WindowPoint_To_Canvas(_startVectors[0]);
-
-										//Find_Point_Location(_startVectors[0]);
-
-										//User_Input.Update_Input();
+										
+										CanvasPoint_To_TexturePoint();
 
 										return _buttonID;
 									}
@@ -237,8 +232,6 @@ namespace XamalTiler
 										_activeGestureType = GestureType.HorizontalDrag;
 
 										_pointLocal = WindowPoint_To_Canvas(_startVectors[0]);
-
-										//User_Input.Update_Input();
 
 										return _buttonID;
 									}
@@ -257,14 +250,13 @@ namespace XamalTiler
 										_activeGestureType = GestureType.Pinch;
 
 										_pointLocal = WindowPoint_To_Canvas(Gesture_Centre(_startVectors));
-										//Find_Point_Location(Gesture_Centre(_startVectors));
+
+										CanvasPoint_To_TexturePoint();
 
 										_imageScaleTemp = _imageScale;
 
 										_length = (_startVectors[0] - _startVectors[1]).Length();
 										if (_length == 0) _length = 0.1f;
-
-										//User_Input.Update_Input();
 
 										return _buttonID;
 									}
@@ -274,21 +266,7 @@ namespace XamalTiler
 										_isBbuttonActive = false;
 									}
 									break;
-								case GestureType.DragComplete:
-									if (_userInputType == UserInputType.Drag)
-									{
-										_isBbuttonActive = true;
-
-										_activeGestureType = GestureType.HorizontalDrag;
-
-										Find_Point_Location(_startVectors[0]);
-
-										//User_Input.Update_Input();
-
-										return _buttonID;
-									}
-									break;
-
+							
 								default:
 									_buttonID = -1;
 									_isBbuttonActive = false;
@@ -312,8 +290,6 @@ namespace XamalTiler
 		{
 			if (_imageScale <= 0) return;
 
-			_imageOffset += (_canvasLocal - _pointLocal);// * (1.0f / _imageScale);
-			
 			if (_imageOffset.X > 0)
 			{
 				while (_imageOffset.X > 0)
@@ -353,34 +329,35 @@ namespace XamalTiler
 		}
 
 
-		internal static void Find_Point_Location(Vector2 mouseLocal)
-		{
-			_canvasLocal = WindowPoint_To_Canvas(mouseLocal);
-
-			foreach (var rect in Create_Image._outRects)
-			{
-				if (rect.Contains(_canvasLocal))
-				{
-					_pointLocal = _canvasLocal - rect.Location.ToVector2();
-					_pointLocal *= 1.0f / _imageScale;
-
-					break;
-				}
-			}
-
-		}
-
 		internal static Vector2 WindowPoint_To_Canvas(Vector2 winLocation)
 		{
 			Rectangle buttonrect = My_Layouts.Button_Canvas(_buttonID);
 
 			winLocation -= buttonrect.Location.ToVector2();
-			winLocation.X *= _imageRenderTarget.Width / (float)buttonrect.Width;
-			winLocation.Y *= _imageRenderTarget.Height / (float)buttonrect.Width;
-			
+
+			if (_currentLayoutID == 2)
+			{
+				winLocation.X *= _fullScreenTarget.Width / (float)buttonrect.Width;
+				winLocation.Y *= _fullScreenTarget.Height / (float)buttonrect.Height;
+			}
+			else
+			{
+				winLocation.X *= _imageRenderTarget.Width / (float)buttonrect.Width;
+				winLocation.Y *= _imageRenderTarget.Height / (float)buttonrect.Width;
+			}
+
 			return winLocation;
 		}
 
+		internal static void CanvasPoint_To_TexturePoint()
+		{
+			_pointLocal -= _imageOffset;
+
+			_pointLocal.X %= _tileTexture.Width * _imageScale;
+			_pointLocal.Y %= _tileTexture.Height * _imageScale;
+
+			_pointLocal *= 1.0f / _imageScale;
+		}
 
 	}
 }

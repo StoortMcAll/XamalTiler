@@ -25,6 +25,7 @@ namespace XamalTiler
 			GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, Point screenSize)
 		{
 			Create_Image._pixelData = new byte[_fieldHeight * _fieldWidth * 4];
+			Create_Image._pixelDataStore = new byte[_fieldHeight * _fieldWidth * 4];
 
 			Colour_Class.Set_Vertices();
 
@@ -34,13 +35,14 @@ namespace XamalTiler
 
 			Rectangle area2 = new Rectangle(Point.Zero, screenSize);
 
-			area2.Inflate(-10, -10);
-			area2.Y = area2.Bottom - area2.Width;
+			area2.Inflate(-4, -4);
+			area2.Y = area2.Bottom - (area2.Width + 0);
 			area2.Height = area2.Width;
 
 			Rectangle area = area2;
-			area.Height = area.Y - 10;
-			area.Y = 10;
+			area.Y = 4;
+			area.Height = area2.Y - area.Y;
+			
 
 			#region Layout 0 - Start Iterating
 
@@ -201,7 +203,7 @@ namespace XamalTiler
 			Add_Layout(2, new List<Divider>() { new Divider(0, rect, grid.Size) });
 
 			start = new Rectangle(0, 0, grid.Width, grid.Height);
-			Add_Button(0,0, start, _fullScreenTarget, MyButtonState.FullScreen, UserInputType.PinchDrag);
+			Add_Button(0, 0, start, _fullScreenTarget, MyButtonState.FullScreen, UserInputType.PinchDrag);
 
 
 			start = new Rectangle(0, 0, 1, 1);
@@ -261,7 +263,7 @@ namespace XamalTiler
 			else
 			{
 				_resolutionSize = ResolutionSize.FullHD;
-				return new Rectangle(0, 0, 8, 16);
+				return new Rectangle(0, 0, 8, 17);
 			}
 		}
 	}

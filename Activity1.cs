@@ -21,6 +21,7 @@ namespace XamalTiler
 	
 	public class Activity1 : Microsoft.Xna.Framework.AndroidGameActivity
 	{
+		private readonly bool _setImmersive = false;
 		private Game1 _game;
 		private View _view;
 
@@ -28,16 +29,15 @@ namespace XamalTiler
 		{
 			base.OnCreate(bundle);
 			
-			if ((ContextCompat.CheckSelfPermission(this, Manifest.Permission.WriteExternalStorage) != (int)Permission.Granted)
-			|| (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadExternalStorage) != (int)Permission.Granted))
-			{
-				ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage, Manifest.Permission.WriteExternalStorage }, 0);
-			}
+			//if ((ContextCompat.CheckSelfPermission(this, Manifest.Permission.WriteExternalStorage) != (int)Permission.Granted)
+			//|| (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadExternalStorage) != (int)Permission.Granted))
+			//{
+			//	ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage, Manifest.Permission.WriteExternalStorage }, 0);
+			//}
 
 			GetDisplaySize(out int width, out int height);
-			GetFullSize(out int fwidth, out int fheight);
 		
-			_game = new Game1(width, height, fwidth, fheight);
+			_game = new Game1(width, height);
 
 			_view = (View)_game.Services.GetService(typeof(View));
 			SetContentView(_view);
@@ -51,17 +51,15 @@ namespace XamalTiler
 
 			WindowManager.DefaultDisplay.GetRectSize(realrect);
 
-			width = realrect.Width(); height = realrect.Height();
-		}
 
-		private void GetFullSize(out int width, out int height)
-		{
 			Android.Graphics.Point
 				realsize = new Android.Graphics.Point();
 
 			WindowManager.DefaultDisplay.GetRealSize(realsize);
 
-			width = realsize.X; height = realsize.Y;
+			if (_setImmersive) { width = realsize.X; height = realsize.Y; }
+			else
+				width = realrect.Width(); height = realrect.Height();
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
@@ -70,6 +68,31 @@ namespace XamalTiler
 			_game.ConfigurationChanged(width, height);
 
 			base.OnConfigurationChanged(newConfig);
+		}
+
+		public override void OnWindowFocusChanged(bool hasFocus)
+		{
+			base.OnWindowFocusChanged(hasFocus);
+
+			if (_setImmersive)
+			{
+				if (hasFocus)
+					SetImmersive();
+			}
+		}
+
+		private void SetImmersive()
+		{
+			if (_view != null && Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+			{
+				_view.SystemUiVisibility = (StatusBarVisibility)
+				  (SystemUiFlags.LayoutStable |
+				   SystemUiFlags.LayoutHideNavigation |
+				   SystemUiFlags.LayoutFullscreen |
+				   SystemUiFlags.HideNavigation |
+				   SystemUiFlags.Fullscreen |
+				   SystemUiFlags.ImmersiveSticky);
+			}
 		}
 	}
 }

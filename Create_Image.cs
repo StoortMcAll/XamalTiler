@@ -18,12 +18,12 @@ namespace XamalTiler
 
         #region Variable Declaration
 
-        internal enum ImageDrawStyle { Sharp, Smooth, Smooth2, Average }
+        internal enum ImageDrawStyle { Sharp, LowBlur, MidBlur, HiBlur } 
       
         internal static ImageDrawStyle _imageDrawStyle = ImageDrawStyle.Sharp;
         internal static ColourType _colourType = ColourType.Linear;
 
-        internal static byte[] _pixelData;
+        internal static byte[] _pixelData, _pixelDataStore;
 
         internal static long _minHits, _maxHits, tempID = -1;
 
@@ -37,16 +37,75 @@ namespace XamalTiler
 
         internal static List<Rectangle> _outRects = new List<Rectangle>();
 
+
+        internal static Task<byte[]> rutDel = Run_UpdateImage_Task();
+        internal static bool _fieldLock = false, _initRUTDelegate = false;
+
+
         #endregion
+
+
+
+        internal static Task<byte[]> Run_UpdateImage_Task()
+		{
+            _fieldLock = true;
+            return Task.Run(() => Update_Image_Full_Task());
+        }
+
+        internal static byte[] Update_Image_Full_Task()
+        {
+            Color color;
+            int index = 0;
+
+            int hits;
+            float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
+
+            for (int y = 0; y < _fieldHeight; y++)
+            {
+                for (int x = 0; x < _fieldWidth; x++)
+                {
+                    hits = _field[x, y];
+
+                    switch (_colourType)
+                    {
+                        case ColourType.Linear:
+                            break;
+                        case ColourType.SquareRoot:
+                            hits = (int)Math.Sqrt(hits);
+                            break;
+                        case ColourType.Stretch:
+                            hits = (int)(hits * dhits);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (hits > _currentSpreadCount)
+                        hits = _currentSpreadCount;
+
+                    color = _adjustSpreadColors[hits];
+
+                    _pixelData[index++] = color.R;
+                    _pixelData[index++] = color.G;
+                    _pixelData[index++] = color.B;
+                    _pixelData[index++] = 255;
+                }
+            }
+
+            _tileTexture.SetData(_pixelData);
+
+            return _pixelDataStore;
+
+        }
 
 
 
         internal static void Update_Image_Full()
         {
+            Color color;
             int index = 0;
 
             Set_CurrentColourSet(_currentColorSetID);
-
             Colour_Class.Set_Vertices();
 
             int hits;
@@ -75,11 +134,11 @@ namespace XamalTiler
                     if (hits > _currentSpreadCount)
                         hits = _currentSpreadCount;
 
-                    hits = _adjustSpreadVertices[hits];
+                    color = _adjustSpreadColors[hits];
 
-                    _pixelData[index++] = _colorSpread[hits].R;
-                    _pixelData[index++] = _colorSpread[hits].G;
-                    _pixelData[index++] = _colorSpread[hits].B;
+                    _pixelData[index++] = color.R;
+                    _pixelData[index++] = color.G;
+                    _pixelData[index++] = color.B;
                     _pixelData[index++] = 255;
                 }
             }
@@ -94,6 +153,7 @@ namespace XamalTiler
             int index = 0;
 
             Set_CurrentColourSet(_currentColorSetID);
+            Set_Vertices();
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -144,7 +204,7 @@ namespace XamalTiler
                         hits = _currentSpreadCount;
 
                     hits = _adjustSpreadVertices[hits];
-
+                    
                     _pixelData[index++] = _colorSpread[hits].R;
                     _pixelData[index++] = _colorSpread[hits].G;
                     _pixelData[index++] = _colorSpread[hits].B;
@@ -160,6 +220,7 @@ namespace XamalTiler
             int index = 0;
 
             Set_CurrentColourSet(_currentColorSetID);
+            Colour_Class.Set_Vertices();
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -235,16 +296,14 @@ namespace XamalTiler
             _tileTexture.SetData(_pixelData);
         }
 
-        internal static void Update_Image_Full_Average()
+        internal static void Update_Image_Low_Blur()
         {
-            int index = 0;
-
-            byte r, g, b;
+            int index = 0, temphit;
 
             Color color;
 
             Set_CurrentColourSet(_currentColorSetID);
-
+            Colour_Class.Set_Vertices();
 
             float dhits = _maxHits == 0 ? 1 : _currentSpreadCount / (float)_maxHits;
 
@@ -258,69 +317,46 @@ namespace XamalTiler
             _fPosy[0] = _fieldHeight - 1;
             _fPosy[_fieldHeight + 1] = 0;
 
-            int[] hitstore = new int[5];
-
             for (int y = 1; y < _fieldHeight + 1; y++) _fPosy[y] = y - 1;
 
             for (int y = 1; y < _fieldHeight + 1; y++)
             {
                 for (int x = 1; x < _fieldWidth + 1; x++)
                 {
-					hitstore[0] = _field[_fPosx[x], _fPosx[y]]; // 100 %
+                    temphit = (int)(_field[_fPosx[x - 1], _fPosx[y]]); // 100 %
+                    temphit += (int)(_field[_fPosx[x + 1], _fPosx[y]]); // 100 %
+                    temphit += (int)(_field[_fPosx[x], _fPosx[y - 1]]); // 100 %
+                    temphit += (int)(_field[_fPosx[x], _fPosx[y + 1]]); // 100 %
 
-					hitstore[1] = (int)(_field[_fPosx[x - 1], _fPosx[y]]); // 100 %
-					hitstore[2] = (int)(_field[_fPosx[x + 1], _fPosx[y]]); // 100 %
-					hitstore[3] = (int)(_field[_fPosx[x], _fPosx[y - 1]]); // 100 %
-					hitstore[4] = (int)(_field[_fPosx[x], _fPosx[y + 1]]); // 100 %
+                    temphit /= 4;
 
-					for (int i = 0; i < 9; i++)
+                    temphit += (_field[_fPosx[x], _fPosx[y]] - temphit) / 2;
+
+                    switch (_colourType)
                     {
-                        switch (_colourType)
-                        {
-                            case ColourType.Linear:
-                                break;
-                            case ColourType.SquareRoot:
-                                hitstore[i] = (int)Math.Sqrt(hitstore[i]);
-                                break;
-                            case ColourType.Stretch:
-                                hitstore[i] = (int)(hitstore[i] * dhits);
-                                break;
-                            default:
-                                break;
-                        }
-
-                        if (hitstore[i] > _currentSpreadCount)
-                            hitstore[i] = _currentSpreadCount;
+                        case ColourType.Linear:
+                            break;
+                        case ColourType.SquareRoot:
+                            temphit = (int)Math.Sqrt(temphit);
+                            break;
+                        case ColourType.Stretch:
+                            temphit = (int)(temphit * dhits);
+                            break;
+                        default:
+                            break;
                     }
 
-                    r = g = b = 0;
+                    if (temphit > _currentSpreadCount) temphit = _currentSpreadCount;
 
-                    for (int i = 0; i < 5; i++)
-					{
-                        color = _colorSpread[_adjustSpreadVertices[hitstore[i]]];
-                     
-                        r += color.R;
-                        g += color.G;
-                        b += color.B;
-                    }
+                    color = _colorSpread[_adjustSpreadVertices[temphit]];
 
-                    r /= 5;g /= 5;b /= 5;
-                   
-
-                    if (r < 0) r = 0;
-                    else if (r > 255) r = 255;
-                    if (g < 0) g = 0;
-                    else if (g > 255) g = 255;
-                    if (b < 0) b = 0;
-                    else if (b > 255) b = 255;
-
-                    _pixelData[index++] = (byte)r;
-                    _pixelData[index++] = (byte)g;
-                    _pixelData[index++] = (byte)b;
+                    _pixelData[index++] = color.R;
+                    _pixelData[index++] = color.G;
+                    _pixelData[index++] = color.B;
                     _pixelData[index++] = 255;
+
                 }
             }
-
             _tileTexture.SetData(_pixelData);
         }
 
@@ -368,19 +404,19 @@ namespace XamalTiler
             _graphicsDevice.SetRenderTarget(_fullScreenTarget);
             _graphicsDevice.Clear(Color.TransparentBlack);
 
-            Vector2 fscale = new Vector2(_fullScreenTarget.Width / (float)_imageRenderTarget.Width) * _imageScale;
+         //   Vector2 fscale = new Vector2(_fullScreenTarget.Width / (float)_imageRenderTarget.Width) * _imageScale;
           
             _outRects.Clear();
 
             Rectangle outRect = _tileTexture.Bounds;
-            outRect.Size = (outRect.Size.ToVector2() * fscale).ToPoint();
-            outRect.Location = (_imageOffset * fscale).ToPoint();
+            outRect.Size = (outRect.Size.ToVector2() * _imageScale).ToPoint();
+            outRect.Location = _imageOffset.ToPoint();
 
             _spriteBatch.Begin();
 
             do
             {
-                outRect.X = (int)_imageOffset.X;// - 10;
+                outRect.X = (int)_imageOffset.X;
 
                 do
                 {
@@ -458,6 +494,8 @@ namespace XamalTiler
                     tempID = _currentColorSetID;
 
                     Set_CurrentColourSet(_currentColorSetID);
+                    if (_currentSpreadCount != _adjustSpreadCount)
+                        Set_Vertices();
                 }
                 _tileTexture.SetData(_pixelData);
 

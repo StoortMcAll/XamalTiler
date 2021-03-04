@@ -28,6 +28,8 @@ namespace XamalTiler
 		internal static int _adjustSpreadCount = 0;
 
 		internal static int[] _adjustSpreadVertices;
+		internal static Color[] _adjustSpreadColors;
+		internal static Color[] _adjustSpreadColorsAsync;
 
 		internal static float _sinOffset = 0.99999f, _0to1 = 1.0f;
 
@@ -58,11 +60,14 @@ namespace XamalTiler
 		#endregion
 
 
+
+
 		internal static void Set_Vertices()
 		{
 			float[] scale = new float[_currentColorSet._colorSpreadCount];
 
 			_adjustSpreadVertices = new int[_currentColorSet._colorSpreadCount];
+			_adjustSpreadColors = new Color[_currentColorSet._colorSpreadCount];
 
 			float val, xval = _sinOffset;
 
@@ -79,7 +84,11 @@ namespace XamalTiler
 
 			_adjustSpreadCount = _adjustSpreadVertices.Length - 1;
 
-			_AdjustSpreadSet = true;
+			for (int i = 0; i < _adjustSpreadCount; i++)
+			{
+				_adjustSpreadColors[i] = _colorSpread[_adjustSpreadVertices[i]];
+			}
+				_AdjustSpreadSet = true;
 		}
 
 		private static int[] ResizeVerticesToWorldCoords(float[] vectors, int range)

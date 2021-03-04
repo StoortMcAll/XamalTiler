@@ -128,8 +128,6 @@ namespace XamalTiler
 
 					_iterateState = IterateState.StoppingIterate;
 
-				//	_task.Wait();
-
 					Activate_Layout(0);
 
 					if (_fatalValues)
@@ -139,10 +137,7 @@ namespace XamalTiler
 						Show_Button(3);
 						Show_Button(7);
 						Show_Button(8);
-						//Show_Button(9);
-						//Show_Button(10);
-						//Show_Button(11);
-						//Show_Button(12);
+					
 						_fatalValues = false;
 					}
 					else
@@ -153,14 +148,6 @@ namespace XamalTiler
 						Show_Button(7);
 						Show_Button(8);
 						Show_Button(20);
-						//Show_Button(10);
-						//Show_Button(11);
-						//Show_Button(12);
-					}
-
-					if (Create_Image._maxHits > 0)
-					{
-						//DistributionClass.Update();
 					}
 
 					break;
@@ -259,40 +246,46 @@ namespace XamalTiler
 					{
 						case ColourType.Linear:
 							_colourType = ColourType.SquareRoot;
-							My_Layouts.Change_Button_Text(2, "SquareRoot");
+							//My_Layouts.Change_Button_Text(2, "SquareRoot");
 							break;
 						case ColourType.Stretch:
 							_colourType = ColourType.Linear;
-							My_Layouts.Change_Button_Text(2, "Linear");
+							//My_Layouts.Change_Button_Text(2, "Linear");
 							break;
 						case ColourType.SquareRoot:
 							_colourType = ColourType.Stretch;
-							My_Layouts.Change_Button_Text(2, "Stretch");
+						//	My_Layouts.Change_Button_Text(2, "Stretch");
 							break;
 						default:
 							break;
 					}
 
+					My_Layouts.Change_Button_Text(2, _colourType.ToString());
+
 					UpDate_Draw_Style_Image();
 					break;
 				case 11:
-					switch (_colourType)
-					{
-						case ColourType.Linear:
-							_colourType = ColourType.Stretch;
-							My_Layouts.Change_Button_Text(2, "Stretch");
-							break;
-						case ColourType.Stretch:
-							_colourType = ColourType.SquareRoot;
-							My_Layouts.Change_Button_Text(2, "SquareRoot");
-							break;
-						case ColourType.SquareRoot:
-							_colourType = ColourType.Linear;
-							My_Layouts.Change_Button_Text(2, "Linear");
-							break;
-						default:
-							break;
-					}
+					//switch (_colourType)
+					//{
+					//	case ColourType.Linear:
+					//		_colourType = ColourType.Stretch;
+					//		My_Layouts.Change_Button_Text(2, "Stretch");
+					//		break;
+					//	case ColourType.Stretch:
+					//		_colourType = ColourType.SquareRoot;
+					//		My_Layouts.Change_Button_Text(2, "SquareRoot");
+					//		break;
+					//	case ColourType.SquareRoot:
+					//		_colourType = ColourType.Linear;
+					//		My_Layouts.Change_Button_Text(2, "Linear");
+					//		break;
+					//	default:
+					//		break;
+					//}
+
+					_colourType = (ColourType)(((int)_colourType + 1) % 3);
+
+					My_Layouts.Change_Button_Text(2, _colourType.ToString());
 
 					UpDate_Draw_Style_Image();
 					break;
@@ -306,73 +299,19 @@ namespace XamalTiler
 					break;
 				case 13:
 					if (_imageDrawStyle == ImageDrawStyle.Sharp)
-						_imageDrawStyle = ImageDrawStyle.Average;
+						_imageDrawStyle = ImageDrawStyle.HiBlur;
 					else
 						_imageDrawStyle = _imageDrawStyle - 1;
 
 					My_Layouts.Change_Button_Text(3, _imageDrawStyle.ToString() + " Image");
 
-					//switch (_imageDrawStyle)
-					//{
-					//	case ImageDrawStyle.Sharp:
-					//		_imageDrawStyle = ImageDrawStyle.Average;
-					//		My_Layouts.Change_Button_Text(3, "Average Image");
-					//		break;
-
-					//	case ImageDrawStyle.Smooth:
-					//		_imageDrawStyle = ImageDrawStyle.Sharp;
-					//		My_Layouts.Change_Button_Text(3, "Sharp Image");
-					//		break;
-
-					//	case ImageDrawStyle.Smooth2:
-					//		_imageDrawStyle = ImageDrawStyle.Smooth;
-					//		My_Layouts.Change_Button_Text(3, "Smooth Image");
-					//		break;
-
-					//	case ImageDrawStyle.Average:
-					//		_imageDrawStyle = ImageDrawStyle.Smooth2;
-					//		My_Layouts.Change_Button_Text(3, "Smooth2 Image");
-					//		break;
-
-					//	default:
-					//		break;
-					//}
 
 					UpDate_Draw_Style_Image();
 					break;
 				case 14:
-					if (_imageDrawStyle == ImageDrawStyle.Average)
-						_imageDrawStyle = ImageDrawStyle.Sharp;
-					else
-						_imageDrawStyle = _imageDrawStyle + 1;
+					_imageDrawStyle = (ImageDrawStyle)(((int)_imageDrawStyle + 1) % 4);
 
 					My_Layouts.Change_Button_Text(3, _imageDrawStyle.ToString() + " Image");
-
-					//switch (_imageDrawStyle)
-					//{
-					//	case ImageDrawStyle.Sharp:
-					//		_imageDrawStyle = ImageDrawStyle.Smooth;
-					//		My_Layouts.Change_Button_Text(3, "Smooth Image");
-					//		break;
-
-					//	case ImageDrawStyle.Smooth:
-					//		_imageDrawStyle = ImageDrawStyle.Smooth2;
-					//		My_Layouts.Change_Button_Text(3, "Smooth2 Image");
-					//		break;
-
-					//	case ImageDrawStyle.Smooth2:
-					//		_imageDrawStyle = ImageDrawStyle.Average;
-					//		My_Layouts.Change_Button_Text(3, "Average Image");
-					//		break;
-
-					//	case ImageDrawStyle.Average:
-					//		_imageDrawStyle = ImageDrawStyle.Sharp;
-					//		My_Layouts.Change_Button_Text(3, "Sharp Image");
-					//		break;
-
-					//	default:
-					//		break;
-					//}
 
 					UpDate_Draw_Style_Image();
 					break;
@@ -469,14 +408,14 @@ namespace XamalTiler
 				case ImageDrawStyle.Sharp:
 					Update_Image_Full();
 					break;
-				case ImageDrawStyle.Smooth:
+				case ImageDrawStyle.HiBlur:
 					Update_Image_Full_Smooth();
 					break;
-				case ImageDrawStyle.Smooth2:
+				case ImageDrawStyle.LowBlur:
 					Update_Image_Full_Smooth2();
 					break;
-				case ImageDrawStyle.Average:
-					Update_Image_Full_Average();
+				case ImageDrawStyle.MidBlur:
+					Update_Image_Low_Blur();
 					break;
 				default:
 					break;
