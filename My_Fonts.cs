@@ -20,12 +20,12 @@ namespace XamalTiler
     {
         #region Variable Declaration
 
-        internal const int FontCount = 7;
+        internal const int FontCount = 1;
 
         const string FontName = "ButtonFont";
 
-        static readonly bool[] _isYCentral = new bool[FontCount] { false, true, true, true, true, true, true };
-        static readonly string[] _fontSizes = new string[FontCount] { "12", "10", "24", "14", "18","27", "30" };
+        static readonly bool[] _isYCentral = new bool[FontCount] {  true };
+        static readonly string[] _fontSizes = new string[FontCount] { "30" };
 
         internal static MyFont _currentMyFont;
         internal static SpriteFont _currentSpriteFont;
@@ -47,26 +47,23 @@ namespace XamalTiler
                         i,
                         content.Load<SpriteFont>(FontName + _fontSizes[i]),
                         _isYCentral[i]);
-
-            _undoArrows[0] = content.Load<Texture2D>("UndoArrowBlack");
-            _undoArrows[1] = content.Load<Texture2D>("UndoArrowWhite");
         }
 
 
 
-        internal static float Best_Fit_To_CurrentFont(float buttonHeight)
-        {
-            int id = 6;
+        //internal static float Best_Fit_To_CurrentFont(float buttonHeight)
+        //{
+        //    int id = 0;
 
-            Set_CurrentFont(id);
+        //    Set_CurrentFont(id);
 
-            float fontscale = 1.0f;
+        //    float fontscale = 1.0f;
 
-            while (buttonHeight - 4 < _currentMyFont._font.MeasureString("Test Gj_ght").Y * fontscale)
-                fontscale *= 0.99f;
+        //    while (buttonHeight - 4 < _currentMyFont._font.MeasureString("Test Gj_ght").Y * fontscale)
+        //        fontscale *= 0.99f;
 
-            return fontscale;
-        }
+        //    return fontscale;
+        //}
 
 
         internal static MyFont Set_CurrentFont(int ID)

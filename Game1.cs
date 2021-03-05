@@ -124,7 +124,7 @@ namespace XamalTiler
 
 			graphics.IsFullScreen = true;
 
-			graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+			graphics.SupportedOrientations = DisplayOrientation.Portrait;
 
 			graphics.ApplyChanges();
 		}
@@ -166,7 +166,7 @@ namespace XamalTiler
 			Initialise.Preset_Values();
 			Initialise.Add_Preset_Colors();
 
-			Layout_Init.Initialise(GraphicsDevice, spriteBatch, _backBufferSize);
+			Layout_Init.Initialise(graphics, spriteBatch, _backBufferSize);
 
 			Create_Image.Update_Image_Full();
 
@@ -231,7 +231,6 @@ namespace XamalTiler
 				_buttonHit = 0;
 
 			Update_ASynch();
-
 
 			DebugWindow.Update(Point.Zero, false);
 

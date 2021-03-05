@@ -14,15 +14,13 @@ namespace XamalTiler
 
 		#region Variable Declaration
 
-		internal enum ResolutionSize { Small, Medium, High, FullHD }
-
-		internal static ResolutionSize _resolutionSize;
+		internal static DisplayOrientation _displayOrientation;
 
 		#endregion
 
 
 		internal static void Initialise(
-			GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, Point screenSize)
+			GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Point screenSize)
 		{
 			Create_Image._pixelData = new byte[_fieldHeight * _fieldWidth * 4];
 			Create_Image._pixelDataStore = new byte[_fieldHeight * _fieldWidth * 4];
@@ -31,24 +29,38 @@ namespace XamalTiler
 
 			List<Divider> dividers = new List<Divider>();
 
-			Init_Layouts(graphicsDevice, spriteBatch, screenSize);
+			Init_Layouts(graphics.GraphicsDevice, spriteBatch, screenSize);
 
-			Rectangle area2 = new Rectangle(Point.Zero, screenSize);
+			_displayOrientation = screenSize.X < screenSize.Y ? DisplayOrientation.Portrait : DisplayOrientation.LandscapeLeft;
+
+			Rectangle area, area2 = new Rectangle(Point.Zero, screenSize);
 
 			area2.Inflate(-4, -4);
-			area2.Y = area2.Bottom - (area2.Width + 0);
-			area2.Height = area2.Width;
 
-			Rectangle area = area2;
-			area.Y = 4;
-			area.Height = area2.Y - area.Y;
+
+			if (_displayOrientation == DisplayOrientation.Portrait)
+			{
+				area2.Y = area2.Bottom - (area2.Width + 0);
+				area2.Height = area2.Width;
+
+				area = area2;
+				area.Y = 4;
+				area.Height = area2.Y - area.Y;
+			}
+			else
+			{
+				area2.X = area2.Right - (area2.Height + 0);
+				area2.Width = area2.Height;
+
+				area = area2;
+				area.X = 4;
+				area.Width = area2.X - area.X;
+			}
 			
 
 			#region Layout 0 - Start Iterating
 
-			Rectangle grid = Find_Grid_For_Resolution(screenSize);
-
-			grid.Height = 8;
+			Rectangle grid = new Rectangle(0, 0, 8, 8);
 
 			dividers.Add(new Divider(0, area, grid.Size));
 
@@ -56,8 +68,6 @@ namespace XamalTiler
 			dividers.Add(new Divider(1, area2, new Point(1, 1)));
 
 			Add_Layout(0, dividers);
-
-			//dividers[1] = new Divider(1, area2, new Point(1, 1));
 
 			int butwid = (grid.Width - 2) / 3;
 
@@ -194,7 +204,7 @@ namespace XamalTiler
 
 			dividers[1] = new Divider(1, area2, new Point(1, 1));
 
-			grid = Find_Grid_For_Resolution(screenSize);
+			grid = Find_Grid_For_FullScreen(screenSize);
 			
 			Rectangle rect = Rectangle.Empty; 
 			rect.Size = screenSize;
@@ -203,16 +213,25 @@ namespace XamalTiler
 			Add_Layout(2, new List<Divider>() { new Divider(0, rect, grid.Size) });
 
 			start = new Rectangle(0, 0, grid.Width, grid.Height);
+		
+
 			Add_Button(0, 0, start, _fullScreenTarget, MyButtonState.FullScreen, UserInputType.PinchDrag);
 
 
 			start = new Rectangle(0, 0, 1, 1);
 			Add_Transparent_Button(1, start, "<");
 
-			start = new Rectangle(0, grid.Height - 2, grid.Width, grid.Height - 1);
+			start = grid;
+			if (_displayOrientation != DisplayOrientation.Portrait)
+			{
+				start.X = start.Width / 2 - 4;
+				start.Width -= 4;
+			}
+
+			start = new Rectangle(start.X, grid.Height - 2, start.Width, grid.Height - 1);
 			Add_Transparent_Button(2, start, "Save Image");
 
-			start = new Rectangle(0, grid.Height - 1, grid.Width, grid.Height);
+			start = new Rectangle(start.X, grid.Height - 1, start.Width, grid.Height);
 			Add_Transparent_Button(3, start, "Set as Wallpaper");
 
 			#endregion
@@ -253,17 +272,21 @@ namespace XamalTiler
 		}
 
 
-		private static Rectangle Find_Grid_For_Resolution(Point screenSize)
+		private static Rectangle Find_Grid_For_FullScreen(Point screenSize)
 		{
 			if (screenSize.X < 480)
 			{
-				_resolutionSize = ResolutionSize.Small;
-				return new Rectangle(0, 0, 8, 13);
+				if (_displayOrientation == DisplayOrientation.Portrait)
+					return new Rectangle(0, 0, 8, 13);
+				else
+					return new Rectangle(0, 0, 13, 8);
 			}
 			else
 			{
-				_resolutionSize = ResolutionSize.FullHD;
-				return new Rectangle(0, 0, 8, 17);
+				if (_displayOrientation == DisplayOrientation.Portrait)
+					return new Rectangle(0, 0, 8, 17);
+				else
+					return new Rectangle(0, 0, 17, 8);
 			}
 		}
 	}

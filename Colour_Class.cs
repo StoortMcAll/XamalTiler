@@ -358,94 +358,35 @@ namespace XamalTiler
 
         internal static void NewRandom_ColourSeries()
         {
-            List<Color> colorlist = new List<Color>();
+            List<ColorRange> colorlist = new List<ColorRange>();
 
-            int value, lastvalue = 0;
+            int counter, maxnewcols;
 
             _colourRand = new Random();
 
-            Set_PrimaryColour_Choice();
+            if (Hits._maxHitsCounted == false) Create_Image.Find_Max_Hits();
 
-			for (int i = 0; i < _colourRand.Next(15) + 5; i++)
+            maxnewcols = (int)Create_Image._maxHits;
+
+            if (maxnewcols < 128) maxnewcols = 128;
+            else if (maxnewcols > 1024) maxnewcols = 1024;
+
+            counter = maxnewcols;
+
+            colorlist.Add(new ColorRange(counter, Get_RandomColour()));
+
+            do
             {
-                bool valbad = true;
+                counter /= 2;
 
-                do
-                {
-                    value = _colourRand.Next(PrimaryColourCount);
+                if (counter < 33) counter = 0;
 
-                    if (i == 0 || value != lastvalue) valbad = false;
+                colorlist.Insert(0, new ColorRange(counter, Get_RandomColour()));
 
-                } while (valbad);
+            } while (counter > 0);
 
-                lastvalue = value;
-
-                colorlist.Add(PrimaryColors[value]);
-            }
-
-            Add_New_RandomColorSet(new Color_Set(new ColorSpreadList(colorlist)));
+            Add_New_RandomColorSet(new Color_Set(new ColorRanges(colorlist)));
         }
-
-        //internal static void NewRandom_ColourSeries2()
-        //{
-        //    List<ColorRange> colorlist = new List<ColorRange>();
-
-        //    bool firstpass = true, high = false;
-
-        //    int maxnewcols, value, lastvalue = 0, index = 0, counter = 0, mult = 32;
-
-        //    _colourRand = new Random();
-
-        //    Set_PrimaryColour_Choice();
-
-        //    if (Hits._maxHitsCounted == false) Create_Image.Find_Max_Hits();
-
-        //    maxnewcols = (int)Create_Image._maxHits;
-
-        //    if (maxnewcols < 256) maxnewcols = 256;
-        //    else if (maxnewcols > 2048) maxnewcols = 2048;
-
-        //    Color color;
-
-        //    while (index < (int)maxnewcols)
-        //    {
-        //        bool valbad = true;
-
-        //        do
-        //        {
-        //            value = _colourRand.Next(PrimaryColourCount / 2);
-
-        //            value += high ? PrimaryColourCount / 2 : 0;
-
-        //            if (firstpass || value != lastvalue) valbad = false;
-
-        //        } while (valbad);
-
-        //        lastvalue = value;
-
-        //        if (firstpass) firstpass = false;
-        //        else
-        //        {
-        //            counter = mult;// + _colourRand.Next(mult);
-
-        //            mult *= 2;
-        //        }
-
-        //        index += counter;
-
-        //        color = PrimaryColors[value];// new Color(
-        //            //_colourRand.Next(high ? 128 : 32) + (high ? 128 : 0),
-        //            //_colourRand.Next(high ? 128 : 32) + (high ? 128 : 0),
-        //            //_colourRand.Next(high ? 128 : 32) + (high ? 128 : 0));
-
-        //        high = !high;
-
-        //        colorlist.Add(new ColorRange(counter, color)); // PrimaryColors[value]));
-
-        //    }
-
-        //    Add_New_RandomColorSet(new Color_Set(new ColorRanges(colorlist)));
-        //}
 
         internal static void NewRandom_ColourSeries3()
         {

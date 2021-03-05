@@ -237,6 +237,8 @@ namespace XamalTiler
 					_usingRandomSpread = false;
 					break;
 				case 9:
+					NewRandom_ColourSeries();
+
 					UpDate_Draw_Style_Image();
 
 					Draw_SpreadRenderTarget();
@@ -265,24 +267,7 @@ namespace XamalTiler
 					UpDate_Draw_Style_Image();
 					break;
 				case 11:
-					//switch (_colourType)
-					//{
-					//	case ColourType.Linear:
-					//		_colourType = ColourType.Stretch;
-					//		My_Layouts.Change_Button_Text(2, "Stretch");
-					//		break;
-					//	case ColourType.Stretch:
-					//		_colourType = ColourType.SquareRoot;
-					//		My_Layouts.Change_Button_Text(2, "SquareRoot");
-					//		break;
-					//	case ColourType.SquareRoot:
-					//		_colourType = ColourType.Linear;
-					//		My_Layouts.Change_Button_Text(2, "Linear");
-					//		break;
-					//	default:
-					//		break;
-					//}
-
+					
 					_colourType = (ColourType)(((int)_colourType + 1) % 3);
 
 					My_Layouts.Change_Button_Text(2, _colourType.ToString());
@@ -290,7 +275,6 @@ namespace XamalTiler
 					UpDate_Draw_Style_Image();
 					break;
 				case 12:
-					//todo ColourSeries2
 					NewRandom_ColourSeries3();
 
 					UpDate_Draw_Style_Image();

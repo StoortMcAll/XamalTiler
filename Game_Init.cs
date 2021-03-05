@@ -130,15 +130,13 @@ namespace XamalTiler
 
 
 
-            _colorSets.Add(new Color_Set(//Red - Gold - Green
+            _colorSets.Add(new Color_Set(//bronze - silver - gold
                 new ColorRanges(
                     new List<ColorRange>() {
-                        new ColorRange(0, new Color(16, 0, 0)),
-                        new ColorRange(64, Color.Red),
-                        new ColorRange(2, new Color(0, 2, 0)),
-                        new ColorRange(64, Color.Green),
-                        new ColorRange(2, new Color(0, 0, 2)),
-                        new ColorRange(64, Color.Blue)
+                        new ColorRange(0, new Color(0, 0, 0)),
+                        new ColorRange(32, new Color(205, 127, 50)),
+                        new ColorRange(128, Color.Silver),
+                        new ColorRange(512, Color.Gold),
                     })));
 
 

@@ -4,8 +4,6 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
-using Android.Support.V4.App;
-using Android.Support.V4.Content;
 using Android.Views;
 
 namespace XamalTiler
