@@ -13,6 +13,8 @@ using Android.Util;
 using System.IO.IsolatedStorage;
 using Android.Content;
 using zzz;
+using System.Reflection;
+using System.Linq;
 
 namespace XamalTiler
 {
@@ -22,7 +24,6 @@ namespace XamalTiler
 
 		public enum ProgramState { Menu, Iterate, StopIterate, Sampling }
 		public enum IterateState { StartIterate, Iterating, StopIterate, PollingData, StoppingIterate }
-
 		public enum QuiltType { Square, Hexagon, Icon }
 		public enum SampleState { findMax, setDisplayData, cutSpurious, ended, setSpectrum }
 		public enum PollIterateData { Waiting, StartCopyNewIteratioins, CopyingNewIterations, CopyNewCompleted, Failure }

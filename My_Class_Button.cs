@@ -81,8 +81,8 @@ namespace XamalTiler
 
 				_border = _area;
 
-				if (inputType != UserInputType.None)
-					_area.Inflate(-4, -4);
+				if (inputType != UserInputType.None) ;
+					//_area.Inflate(-4, -4);
 				else
 				{
 					_background = new Color(40, 40, 50);
@@ -95,7 +95,7 @@ namespace XamalTiler
 
 				_inputType = inputType;
 
-				Set_Borders();
+				//Set_Borders();
 
 				Set_Text(text);
 			}
@@ -126,9 +126,9 @@ namespace XamalTiler
 
 				_border = _area;
 
-				_area.Inflate(-4, -4);
+			//	_area.Inflate(-4, -4);
 
-				_canvasTexture.Inflate(-4, -4);
+			//	_canvasTexture.Inflate(-4, -4);
 
 				//_fontScale = Best_Fit_Font();
 
@@ -252,8 +252,8 @@ namespace XamalTiler
 
 				_spriteBatch.Begin();
 
-				foreach (var border in _borders)
-					_spriteBatch.Draw(_1by1, border, _borderCol);
+				//foreach (var border in _borders)
+				//	_spriteBatch.Draw(_1by1, border, _borderCol);
 
 			
 				if (_myButtonState == MyButtonState.Greyed)

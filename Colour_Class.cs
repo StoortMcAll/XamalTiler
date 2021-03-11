@@ -115,7 +115,6 @@ namespace XamalTiler
 
         #endregion
 
-
         public class Color_Set
         {
             #region Variable Declaration
@@ -353,14 +352,17 @@ namespace XamalTiler
             }
         }
 
+
         public static bool TrueNotFalse { get { return _rand.Next(2) != 0; } }
 
 
         internal static void NewRandom_ColourSeries()
         {
+            bool luminanceflip = false;
+
             List<ColorRange> colorlist = new List<ColorRange>();
 
-            int counter, maxnewcols;
+            int counter, maxnewcols, adder = 64;
 
             _colourRand = new Random();
 
@@ -368,31 +370,36 @@ namespace XamalTiler
 
             maxnewcols = (int)Create_Image._maxHits;
 
-            if (maxnewcols < 128) maxnewcols = 128;
+            if (maxnewcols < 64) maxnewcols = 64;
             else if (maxnewcols > 1024) maxnewcols = 1024;
 
-            counter = maxnewcols;
+            counter = 0;
 
-            colorlist.Add(new ColorRange(counter, Get_RandomColour()));
+            colorlist.Add(new ColorRange(0, Get_RandomColour(true)));
 
             do
             {
-                counter /= 2;
+                counter += adder;
 
-                if (counter < 33) counter = 0;
+                if (counter + adder > maxnewcols) counter = maxnewcols;
+                else adder *= 2;
 
-                colorlist.Insert(0, new ColorRange(counter, Get_RandomColour()));
+                colorlist.Add(new ColorRange(counter, Get_RandomColour(luminanceflip)));
 
-            } while (counter > 0);
+                luminanceflip = !luminanceflip;
+
+            } while (counter < maxnewcols);
 
             Add_New_RandomColorSet(new Color_Set(new ColorRanges(colorlist)));
         }
 
         internal static void NewRandom_ColourSeries3()
         {
+            bool luminanceflip = false;
+
             List<ColorRange> colorlist = new List<ColorRange>();
 
-            int maxnewcols, primarycolsindex, lastprimarycolsindex;
+            int maxnewcols;
             int counter, colourrangecounter = 0, colourlistindex = 0;
 
             _colourRand = new Random();
@@ -408,26 +415,19 @@ namespace XamalTiler
 
             Color color;
 
-            lastprimarycolsindex = _colourRand.Next(PrimaryColourCount);
-
-            colorlist.Add(new ColorRange(0, Get_RandomColour()));// PrimaryColors[lastprimarycolsindex]));
+            colorlist.Add(new ColorRange(0, Get_RandomColour(true)));
             
             while (colourrangecounter < (int)maxnewcols)
             {
-                do
-                {
-                    primarycolsindex = _colourRand.Next(PrimaryColourCount);
-                } while (lastprimarycolsindex == primarycolsindex);
-
-                lastprimarycolsindex = primarycolsindex;
-
-                color = Get_RandomColour();// PrimaryColors[primarycolsindex];
+               
+                color = Get_RandomColour(luminanceflip);
+                luminanceflip = !luminanceflip;
 
                 counter = Max_Difference_Between(colorlist[colourlistindex++]._color, color);
 
                 colourrangecounter += counter;
 
-                colorlist.Add(new ColorRange(counter, color)); 
+                colorlist.Add(new ColorRange(counter, color));
 
             }
 
@@ -441,7 +441,38 @@ namespace XamalTiler
                 _colourRand.Next(256),
                 _colourRand.Next(256)
                 ,255);
+        }
 
+        private static Color Get_RandomColour(bool isDark)
+        {
+            Color color;
+
+            bool getnewcolor = true;
+            
+			do
+			{
+                color = new Color(
+                    _colourRand.Next(256), _colourRand.Next(256),
+                    _colourRand.Next(256) , 255);
+
+                if (isDark)
+				{
+                    if (RGBLuminance(color) < 0.25f) getnewcolor = false;
+				}
+                else
+				{
+                    if (RGBLuminance(color) > 0.75f) getnewcolor = false;
+                }
+
+            } while (getnewcolor);
+
+            return color;
+        }
+        private static float RGBLuminance(Color color)
+		{
+            float div = 1.0f / 255.0f;
+
+            return 0.2126f * (color.R * div) + 0.7152f * (color.G * div) + 0.0722f * (color.B * div);
         }
 
         private static int Max_Difference_Between(Color color1, Color color2)
