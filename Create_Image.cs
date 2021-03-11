@@ -400,17 +400,33 @@ namespace XamalTiler
         internal static void Draw_FullScreen()
         {
             if (_saveImageState != SaveImageState.Ready) return;
-           
-            _graphicsDevice.SetRenderTarget(_fullScreenTarget);
-            _graphicsDevice.Clear(Color.TransparentBlack);
 
-         //   Vector2 fscale = new Vector2(_fullScreenTarget.Width / (float)_imageRenderTarget.Width) * _imageScale;
-          
             _outRects.Clear();
 
+            Rectangle inrect = Rectangle.Empty;
             Rectangle outRect = _tileTexture.Bounds;
             outRect.Size = (outRect.Size.ToVector2() * _imageScale).ToPoint();
             outRect.Location = _imageOffset.ToPoint();
+
+            bool drawscaled = false;
+            if (_imageScale < 0.8f)
+			{
+                drawscaled = true;
+
+                inrect.Size = outRect.Size;
+
+                _graphicsDevice.SetRenderTarget(_scaledImageTarget);
+                _graphicsDevice.Clear(Color.TransparentBlack);
+
+                _spriteBatch.Begin();
+
+                _spriteBatch.Draw(_tileTexture, inrect, Color.White);
+
+                _spriteBatch.End();
+            }
+
+            _graphicsDevice.SetRenderTarget(_fullScreenTarget);
+            _graphicsDevice.Clear(Color.TransparentBlack);
 
             _spriteBatch.Begin();
 
@@ -423,7 +439,10 @@ namespace XamalTiler
 
                     _outRects.Add(outRect);
 
-                    _spriteBatch.Draw(_tileTexture, outRect, Color.White);
+                    if (drawscaled)
+                        _spriteBatch.Draw(_scaledImageTarget, outRect, inrect, Color.White);
+                    else
+                        _spriteBatch.Draw(_tileTexture, outRect, Color.White);
 
                     outRect.X += outRect.Width;
                 } while (outRect.X < _fullScreenTarget.Width);

@@ -358,8 +358,6 @@ namespace XamalTiler
 
         internal static void NewRandom_ColourSeries()
         {
-            bool luminanceflip = false;
-
             List<ColorRange> colorlist = new List<ColorRange>();
 
             int counter, maxnewcols, adder = 64;
@@ -384,9 +382,7 @@ namespace XamalTiler
                 if (counter + adder > maxnewcols) counter = maxnewcols;
                 else adder *= 2;
 
-                colorlist.Add(new ColorRange(counter, Get_RandomColour(luminanceflip)));
-
-                luminanceflip = !luminanceflip;
+                colorlist.Add(new ColorRange(counter, Get_RandomColour()));
 
             } while (counter < maxnewcols);
 
@@ -410,8 +406,8 @@ namespace XamalTiler
 
             maxnewcols = (int)Create_Image._maxHits;
 
-            if (maxnewcols < 256) maxnewcols = 256;
-            else if (maxnewcols > 2048) maxnewcols = 2048;
+            if (maxnewcols < 64) maxnewcols = 64;
+            else if (maxnewcols > 1024) maxnewcols = 1024;
 
             Color color;
 
@@ -419,8 +415,8 @@ namespace XamalTiler
             
             while (colourrangecounter < (int)maxnewcols)
             {
-               
                 color = Get_RandomColour(luminanceflip);
+
                 luminanceflip = !luminanceflip;
 
                 counter = Max_Difference_Between(colorlist[colourlistindex++]._color, color);

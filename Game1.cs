@@ -50,7 +50,7 @@ namespace XamalTiler
 
 		internal static Action DoIterations;
 
-		internal static RenderTarget2D _imageRenderTarget, _spreadRenderTarget, _fullScreenTarget, _screenshotTarget;
+		internal static RenderTarget2D _imageRenderTarget, _spreadRenderTarget, _fullScreenTarget, _screenshotTarget, _scaledImageTarget;
 
 		internal static float _imageScale = 1.0f;
 
@@ -151,6 +151,8 @@ namespace XamalTiler
 			_displayRatio = _backBufferSize.X / (float)_backBufferSize.Y;
 
 			_imageRenderTarget = new RenderTarget2D(GraphicsDevice, _fieldWidth, _fieldHeight);
+
+			_scaledImageTarget = new RenderTarget2D(GraphicsDevice, _fieldWidth, _fieldHeight);
 
 			_spreadRenderTarget = new RenderTarget2D(GraphicsDevice, _fieldWidth, _fieldHeight);
 

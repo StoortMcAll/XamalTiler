@@ -286,7 +286,7 @@ namespace XamalTiler
                                 break;
                             case 6:
                                 if (TrueNotFalse)
-                                    _square.trig += (int)Get_6DP_Random_Value(-3, 6);
+                                    _square.trig += (int)Get_6DP_Random_Value(3, 6);
 
                                 _itrigValues = new IconTrigValues(_square.trig);
                                 break;
@@ -319,7 +319,7 @@ namespace XamalTiler
                                 _square.omega += Get_6DP_Random_Value(-1.0, 2.0);
                                 break;
                             case 6:
-                                _square.trig += (int)Get_6DP_Random_Value(-6, 12);
+                                _square.trig += (int)Get_6DP_Random_Value(6, 12);
 
                                 _itrigValues = new IconTrigValues(_square.trig);
                                 break;
@@ -352,7 +352,7 @@ namespace XamalTiler
                                 _square.omega += Get_6DP_Random_Value(-2.0, 4.0);
                                 break;
                             case 6:
-                                _square.trig += (int)Get_6DP_Random_Value(-6, 18);
+                                _square.trig += (int)Get_6DP_Random_Value(6, 18);
 
                                 _itrigValues = new IconTrigValues(_square.trig);
                                 break;
@@ -464,11 +464,6 @@ namespace XamalTiler
                             case 5:
                                 _square.omega += Get_6DP_Random_Value(-2.0, 4.0);
                                 break;
-                            case 6:
-                                _square.trig += (int)Get_6DP_Random_Value(3, 49);
-
-                                _itrigValues = new IconTrigValues(_square.trig);
-                                break;
                             default:
                                 break;
                         }
@@ -480,6 +475,12 @@ namespace XamalTiler
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
         internal static double Get_6DP_Random_Value(double lhs = 1.0, double range = 0.0)
         {
             return lhs + (double)_rand.NextDouble() * range;
