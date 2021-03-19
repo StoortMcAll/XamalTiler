@@ -190,12 +190,12 @@ namespace XamalTiler
                 using (var fileStream = new FileStream(filename, FileMode.Create))
                     _screenshotTarget.SaveAsPng(fileStream, _screenshotTarget.Width, _screenshotTarget.Height);
 
-                Android.Graphics.Bitmap bm = Android.Graphics.BitmapFactory.DecodeFile(filename);
+             //   Android.Graphics.Bitmap bm = Android.Graphics.BitmapFactory.DecodeFile(filename);
 
-                Android.App.WallpaperManager manager = Android.App.WallpaperManager.GetInstance(
-                    Android.App.Application.Context);
+               // Android.App.WallpaperManager manager = Android.App.WallpaperManager.GetInstance(
+                   // Android.App.Application.Context);
 
-                manager.SetBitmap(bm);
+              //  manager.SetBitmap(bm);
             }
 
 
