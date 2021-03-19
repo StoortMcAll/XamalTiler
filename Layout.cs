@@ -73,15 +73,15 @@ namespace XamalTiler
 
 			Rectangle start = new Rectangle(0, 0, butwid, 1);
 
-			Add_Button(0, start, "Lace");
+			Add_Button(0, start, "Quad");
 
 			start.X = butwid + 1;
 			start.Width = start.X + butwid;
-			Add_Button(5, start, "Scar");
+			Add_Button(5, start, "Strange");
 
 			start.X = grid.Width - butwid;
 			start.Width = grid.Width;
-			Add_Button(6, start, "Hexa");
+			Add_Button(6, start, "Hexagon");
 
 			start.X = 0; start.Width = grid.Width;
 			start.Y = 1; start.Height = 2;
