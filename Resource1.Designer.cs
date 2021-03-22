@@ -63,89 +63,9 @@ namespace XamalTiler {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] ButtonFont10 {
-            get {
-                object obj = ResourceManager.GetObject("ButtonFont10", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] ButtonFont12 {
-            get {
-                object obj = ResourceManager.GetObject("ButtonFont12", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] ButtonFont14 {
-            get {
-                object obj = ResourceManager.GetObject("ButtonFont14", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] ButtonFont18 {
-            get {
-                object obj = ResourceManager.GetObject("ButtonFont18", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] ButtonFont24 {
-            get {
-                object obj = ResourceManager.GetObject("ButtonFont24", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] ButtonFont27 {
-            get {
-                object obj = ResourceManager.GetObject("ButtonFont27", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] ButtonFont30 {
             get {
                 object obj = ResourceManager.GetObject("ButtonFont30", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] UndoArrowBlack {
-            get {
-                object obj = ResourceManager.GetObject("UndoArrowBlack", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] UndoArrowWhite {
-            get {
-                object obj = ResourceManager.GetObject("UndoArrowWhite", resourceCulture);
                 return ((byte[])(obj));
             }
         }

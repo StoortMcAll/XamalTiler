@@ -118,31 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ButtonFont10" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ButtonFont10.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
-  </data>
-  <data name="ButtonFont12" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ButtonFont12.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
-  </data>
-  <data name="ButtonFont14" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ButtonFont14.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
-  </data>
-  <data name="ButtonFont18" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ButtonFont18.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
-  </data>
-  <data name="ButtonFont24" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ButtonFont24.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
-  </data>
-  <data name="ButtonFont27" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ButtonFont27.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
-  </data>
   <data name="ButtonFont30" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ButtonFont30.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
-  </data>
-  <data name="UndoArrowBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UndoArrowBlack.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
-  </data>
-  <data name="UndoArrowWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UndoArrowWhite.xnb;System.Byte[], mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</value>
   </data>
 </root>

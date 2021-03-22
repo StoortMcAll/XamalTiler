@@ -20,6 +20,12 @@ using Android.App;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
+#if DEBUG
+[assembly: Application(Debuggable=true)]
+#else
+[assembly: Application(Debuggable = false)]
+#endif
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("bbe9dd86-2aa0-41ad-9c5d-2eeb2edb2bd7")]
 

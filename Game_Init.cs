@@ -130,15 +130,13 @@ namespace XamalTiler
 
 
 
-            _colorSets.Add(new Color_Set(//Red - Gold - Green
+            _colorSets.Add(new Color_Set(//bronze - silver - gold
                 new ColorRanges(
                     new List<ColorRange>() {
-                        new ColorRange(0, new Color(16, 0, 0)),
-                        new ColorRange(64, Color.Red),
-                        new ColorRange(2, new Color(0, 2, 0)),
-                        new ColorRange(64, Color.Green),
-                        new ColorRange(2, new Color(0, 0, 2)),
-                        new ColorRange(64, Color.Blue)
+                        new ColorRange(0, new Color(0, 0, 0)),
+                        new ColorRange(32, new Color(205, 127, 50)),
+                        new ColorRange(128, Color.Silver),
+                        new ColorRange(512, Color.Gold),
                     })));
 
 
@@ -195,11 +193,11 @@ namespace XamalTiler
 		internal static void Preset_Values()
         {
             _square = new SquareValues(
-                _rand.NextDouble(),
-                _rand.NextDouble(),
-                0.2, 0.1, -0.9, -0.59, 0.05, -0.34);
-           
-            _itrigValues = new IconTrigValues(_square.trig);
+				_rand.NextDouble(),
+				_rand.NextDouble(),
+				0.2, 0.1, -0.9, -0.59, 0.05, -0.34);
+
+			_itrigValues = new IconTrigValues(_square.trig);
         }
 
 
@@ -288,7 +286,7 @@ namespace XamalTiler
                                 break;
                             case 6:
                                 if (TrueNotFalse)
-                                    _square.trig += (int)Get_6DP_Random_Value(-3, 6);
+                                    _square.trig += (int)Get_6DP_Random_Value(3, 6);
 
                                 _itrigValues = new IconTrigValues(_square.trig);
                                 break;
@@ -321,7 +319,7 @@ namespace XamalTiler
                                 _square.omega += Get_6DP_Random_Value(-1.0, 2.0);
                                 break;
                             case 6:
-                                _square.trig += (int)Get_6DP_Random_Value(-6, 12);
+                                _square.trig += (int)Get_6DP_Random_Value(6, 12);
 
                                 _itrigValues = new IconTrigValues(_square.trig);
                                 break;
@@ -354,7 +352,7 @@ namespace XamalTiler
                                 _square.omega += Get_6DP_Random_Value(-2.0, 4.0);
                                 break;
                             case 6:
-                                _square.trig += (int)Get_6DP_Random_Value(-6, 18);
+                                _square.trig += (int)Get_6DP_Random_Value(6, 18);
 
                                 _itrigValues = new IconTrigValues(_square.trig);
                                 break;
@@ -466,11 +464,6 @@ namespace XamalTiler
                             case 5:
                                 _square.omega += Get_6DP_Random_Value(-2.0, 4.0);
                                 break;
-                            case 6:
-                                _square.trig += (int)Get_6DP_Random_Value(3, 49);
-
-                                _itrigValues = new IconTrigValues(_square.trig);
-                                break;
                             default:
                                 break;
                         }
@@ -482,29 +475,16 @@ namespace XamalTiler
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
         internal static double Get_6DP_Random_Value(double lhs = 1.0, double range = 0.0)
         {
             return lhs + (double)_rand.NextDouble() * range;
         }
-
-
-        internal static void Set_Trig_Values(int value)
-        {
-                _square.trig = value;
-
-                _itrigValues.c = new double[_square.trig];
-                _itrigValues.s = new double[_square.trig];
-
-                double mult = 1.0d / (double)_square.trig;
-
-                for (int i = 0; i < _square.trig; i++)
-                {
-                    _itrigValues.c[i] = Math.Cos(2 * Math.PI * i * mult);
-                    _itrigValues.s[i] = Math.Sin(2 * Math.PI * i * mult);
-                }
-
-        }
-
 
 
         private static void Clear_Data()

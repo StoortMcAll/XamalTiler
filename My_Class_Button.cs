@@ -42,8 +42,6 @@ namespace XamalTiler
 
 			bool _hasText, _hasTexture, _isTransparent = false;
 
-			bool _isDoButton = false;
-
 			SpriteEffects _undoSpriteEffect = SpriteEffects.None;
 
 			Vector2 _textPosition;
@@ -83,8 +81,8 @@ namespace XamalTiler
 
 				_border = _area;
 
-				if (inputType != UserInputType.None)
-					_area.Inflate(-4, -4);
+				if (inputType != UserInputType.None) ;
+					//_area.Inflate(-4, -4);
 				else
 				{
 					_background = new Color(40, 40, 50);
@@ -97,7 +95,7 @@ namespace XamalTiler
 
 				_inputType = inputType;
 
-				Set_Borders();
+				//Set_Borders();
 
 				Set_Text(text);
 			}
@@ -128,11 +126,11 @@ namespace XamalTiler
 
 				_border = _area;
 
-				_area.Inflate(-4, -4);
+			//	_area.Inflate(-4, -4);
 
-				_canvasTexture.Inflate(-4, -4);
+			//	_canvasTexture.Inflate(-4, -4);
 
-				_fontScale = Best_Fit_To_CurrentFont(_area.Height);
+				//_fontScale = Best_Fit_Font();
 
 				_myButtonState = myButtonState;
 
@@ -152,42 +150,37 @@ namespace XamalTiler
 
 				if (_hasText == false) return;
 
-				if (_text[0] == '¬')
-				{
-					_hasText = false;
+			
+				_fontScale = Best_Fit_Font();
 
-					if (_text[1] == '0')
-						_undoSpriteEffect = SpriteEffects.None;
-					else
-						_undoSpriteEffect = SpriteEffects.FlipHorizontally;
+				Vector2 fontsize = _buttonFont.MeasureString(text) * _fontScale;
 
-					if (_text[2] == '1')
-						_texture = MyFonts._undoArrows[0];
-					else
-						_texture = MyFonts._undoArrows[1];
+				_textPosition = Vector2.Zero;
 
-					_isDoButton = true;
-				}
-				else
-				{
-					_isDoButton = false;
+				_textPosition.X = _area.Center.X - (int)fontsize.X / 2;
+				_textPosition.Y = _area.Center.Y - 2 - (int)fontsize.Y / 2;
 
-					_fontScale = Best_Fit_To_CurrentFont(_area.Height);
+				_textRectangle = Rectangle.Empty;
 
-					Vector2 fontsize = _buttonFont.MeasureString(text) * _fontScale;
-
-					_textPosition = Vector2.Zero;
-
-					_textPosition.X = _area.Center.X - (int)fontsize.X / 2;
-					_textPosition.Y = _area.Center.Y - 2 - (int)fontsize.Y / 2;
-
-					_textRectangle = Rectangle.Empty;
-
-					_textRectangle.Location = _textPosition.ToPoint();
-					_textRectangle.Size = fontsize.ToPoint();
-				}
-
+				_textRectangle.Location = _textPosition.ToPoint();
+				_textRectangle.Size = fontsize.ToPoint();
+				
 				Draw_Target();
+			}
+
+			float Best_Fit_Font()
+			{
+				Set_CurrentFont(0);
+
+				float fontscale = 1.0f;
+
+				while (_area.Height - 4 < _currentMyFont._font.MeasureString(_text).Y * fontscale)
+					fontscale *= 0.99f;
+
+				while (_area.Width - 4 < _currentMyFont._font.MeasureString(_text).X * fontscale)
+					fontscale *= 0.99f;
+
+				return fontscale;
 			}
 
 			public void Set_Transparent(bool isTransparent)
@@ -259,8 +252,8 @@ namespace XamalTiler
 
 				_spriteBatch.Begin();
 
-				foreach (var border in _borders)
-					_spriteBatch.Draw(_1by1, border, _borderCol);
+				//foreach (var border in _borders)
+				//	_spriteBatch.Draw(_1by1, border, _borderCol);
 
 			
 				if (_myButtonState == MyButtonState.Greyed)
@@ -282,16 +275,12 @@ namespace XamalTiler
 
 						_spriteBatch.DrawString(_buttonFont, _text, _textPosition, _fontGrey, 0, Vector2.Zero, _fontScale, SpriteEffects.None, 1.0f);
 					}
-					else
-					{
-						if (_isDoButton) _spriteBatch.Draw(_texture, _area, _fontGrey);
-					}
 
 					_spriteBatch.Draw(_1by1, _area, _greyed);
 				}
 				else
 				{
-					_spriteBatch.Draw(_1by1, _area, _background * (_isTransparent ? 0.25f : 1.0f));
+					_spriteBatch.Draw(_1by1, _area, _background * (_isTransparent ? 0.7125f : 1.0f));
 
 					if (_hasText)
 					{
@@ -307,10 +296,6 @@ namespace XamalTiler
 							_textPosition + new Vector2(1.0f, 0), _fontShadowCol, 0, Vector2.Zero, _fontScale, SpriteEffects.None, 0.95f);
 
 						_spriteBatch.DrawString(_buttonFont, _text, _textPosition, _fontCol, 0, Vector2.Zero, _fontScale, SpriteEffects.None, 1.0f);
-					}
-					else
-					{
-						if (_isDoButton) _spriteBatch.Draw(_texture, _area, null, _fontCol, 0, Vector2.Zero, _undoSpriteEffect, 1.0f);
 					}
 				}
 

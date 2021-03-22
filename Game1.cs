@@ -12,6 +12,9 @@ using Android.Views;
 using Android.Util;
 using System.IO.IsolatedStorage;
 using Android.Content;
+using zzz;
+using System.Reflection;
+using System.Linq;
 
 namespace XamalTiler
 {
@@ -21,11 +24,10 @@ namespace XamalTiler
 
 		public enum ProgramState { Menu, Iterate, StopIterate, Sampling }
 		public enum IterateState { StartIterate, Iterating, StopIterate, PollingData, StoppingIterate }
-
 		public enum QuiltType { Square, Hexagon, Icon }
 		public enum SampleState { findMax, setDisplayData, cutSpurious, ended, setSpectrum }
 		public enum PollIterateData { Waiting, StartCopyNewIteratioins, CopyingNewIterations, CopyNewCompleted, Failure }
-		public enum ColourType { Linear, SquareRoot, Stretch }
+		public enum ColourType { Linear, Stretch, SquareRoot }
 		public enum HexagonValueNames { sk11, sk12, sk21, sel11, sel21 }
 
 		internal static Color White = Color.White, Ghosted = new Color(64, 64, 64, 64);
@@ -48,7 +50,7 @@ namespace XamalTiler
 
 		internal static Action DoIterations;
 
-		internal static RenderTarget2D _imageRenderTarget, _spreadRenderTarget, _fullScreenTarget, _screenshotTarget;
+		internal static RenderTarget2D _imageRenderTarget, _spreadRenderTarget, _fullScreenTarget, _screenshotTarget, _scaledImageTarget;
 
 		internal static float _imageScale = 1.0f;
 
@@ -104,7 +106,7 @@ namespace XamalTiler
 
 
 
-		public Game1(int width, int height, int fwidth, int fheight)
+		public Game1(int width, int height)
 		{
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
@@ -113,17 +115,17 @@ namespace XamalTiler
 					GestureType.FreeDrag | GestureType.DragComplete | GestureType.Tap |
 					GestureType.None;
 
-			if (fwidth > fheight)
-				_displaySize = new Point(fheight, fwidth);
+			if (width > height)
+				_displaySize = new Point(height, width);
 			else
-				_displaySize = new Point(fwidth, fheight);
+				_displaySize = new Point(width, height);
 
 			graphics.PreferredBackBufferWidth = width;
 			graphics.PreferredBackBufferHeight = height;
 
 			graphics.IsFullScreen = true;
 
-			graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+			graphics.SupportedOrientations = DisplayOrientation.Portrait;
 
 			graphics.ApplyChanges();
 		}
@@ -139,24 +141,18 @@ namespace XamalTiler
 		protected override void Initialize()
 		{
 			base.Initialize();
+
+			DebugWindow.Initialise(this, graphics, spriteBatch);
 			
-			_viewport = GraphicsDevice.Viewport;
-
-			if (_viewport.Width != graphics.PreferredBackBufferWidth || _viewport.Height != graphics.PreferredBackBufferHeight)
-			{
-				GraphicsDevice.SetRenderTarget(null);
-
-				_viewport = new Viewport(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-				GraphicsDevice.Viewport = _viewport;
-
-				graphics.ApplyChanges();
-			}
+			ResolveViewPort();
 
 			_backBufferSize = new Point(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 		
 			_displayRatio = _backBufferSize.X / (float)_backBufferSize.Y;
 
 			_imageRenderTarget = new RenderTarget2D(GraphicsDevice, _fieldWidth, _fieldHeight);
+
+			_scaledImageTarget = new RenderTarget2D(GraphicsDevice, _fieldWidth, _fieldHeight);
 
 			_spreadRenderTarget = new RenderTarget2D(GraphicsDevice, _fieldWidth, _fieldHeight);
 
@@ -173,7 +169,7 @@ namespace XamalTiler
 			Initialise.Preset_Values();
 			Initialise.Add_Preset_Colors();
 
-			Layout_Init.Initialise(GraphicsDevice, spriteBatch, _backBufferSize);
+			Layout_Init.Initialise(graphics, spriteBatch, _backBufferSize);
 
 			Create_Image.Update_Image_Full();
 
@@ -185,11 +181,24 @@ namespace XamalTiler
 			GraphicsDevice.Clear(Color.TransparentBlack);
 			GraphicsDevice.SetRenderTarget(null);
 
-			GraphicsDevice.SetRenderTarget(_spreadRenderTarget);
-			GraphicsDevice.Clear(Color.Red);
-			GraphicsDevice.SetRenderTarget(null);
+			Colour_Class.Draw_SpreadRenderTarget();
 
 			//DistributionClass.Initialise();
+			//ResolveViewPort();
+		}
+
+		private void ResolveViewPort()
+		{
+			GraphicsDevice.SetRenderTarget(null);
+
+			_viewport = GraphicsDevice.Viewport;
+
+			if (_viewport.Width == graphics.PreferredBackBufferWidth) return;// ||
+				_viewport = new Viewport(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+			GraphicsDevice.Viewport = _viewport;
+
+			graphics.ApplyChanges();
 
 		}
 
@@ -225,6 +234,8 @@ namespace XamalTiler
 				_buttonHit = 0;
 
 			Update_ASynch();
+
+			DebugWindow.Update(Point.Zero, false);
 
 			base.Update(gameTime);
 		}
@@ -298,6 +309,8 @@ namespace XamalTiler
 									"Max - " + Create_Image._maxHits.ToString() +
 									" of " + Colour_Class._currentColorSet._colorSpreadCount.ToString());
 
+								
+
 								//_iterCounter = 0;
 
 								_iterateState = IterateState.PollingData;
@@ -328,11 +341,17 @@ namespace XamalTiler
 			//DistributionClass.Draw_Target();
 
 			GraphicsDevice.SetRenderTarget(null);
-			GraphicsDevice.Clear(new Color(21, 60, 120));
+			//ResolveViewPort();
+			if (_currentLayoutID == 2)
+				GraphicsDevice.Clear(Color.Black);
+			else
+				GraphicsDevice.Clear(new Color(21, 60, 120));
 
 			spriteBatch.Begin();
 
 			My_Layouts.Draw();
+
+			DebugWindow.Draw();
 
 			spriteBatch.End();
 

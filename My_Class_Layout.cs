@@ -105,6 +105,7 @@ namespace XamalTiler
 				}
 				else
 				{
+					//_backPaneCol = Color.Black;
 					canvas.Location = Point.Zero;
 					canvas.Width = _screenSize.X;// + 20;
 					canvas.Height = _screenSize.Y;// + 20;
