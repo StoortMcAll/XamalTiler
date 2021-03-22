@@ -182,6 +182,6 @@
     </DotfuscatorAndroidSigningCertFingerprint>
   </PropertyGroup>
   <!-- Import the Dotfuscator MSBuild targets. Must be done last. -->
-  <Import Project="$(DotfuscatorMSBuildDir)\PreEmptive.Dotfuscator.Common.targets" /-->
+  <Import Project="$(DotfuscatorMSBuildDir)\PreEmptive.Dotfuscator.Common.targets" />
 -->
 </Project>
