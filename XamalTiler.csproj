@@ -161,7 +161,8 @@
       <Target Name="AfterBuild">
       </Target>
   -->
-  <!--Import Project="$([System.Environment]::GetFolderPath(SpecialFolder.UserProfile))\.dotfuscator.user.props" Condition="Exists('$([System.Environment]::GetFolderPath(SpecialFolder.UserProfile))\.dotfuscator.user.props')" />
+<!--
+  <Import Project="$([System.Environment]::GetFolderPath(SpecialFolder.UserProfile))\.dotfuscator.user.props" Condition="Exists('$([System.Environment]::GetFolderPath(SpecialFolder.UserProfile))\.dotfuscator.user.props')" />
   <!-- Set build properties for Dotfuscator. -->
   <PropertyGroup>
     <!-- Specify the location of the MSBuild targets, if not already provided. -->
@@ -182,4 +183,5 @@
   </PropertyGroup>
   <!-- Import the Dotfuscator MSBuild targets. Must be done last. -->
   <Import Project="$(DotfuscatorMSBuildDir)\PreEmptive.Dotfuscator.Common.targets" /-->
+-->
 </Project>
